@@ -26,16 +26,22 @@ const Statistics = (props) => {
   const good = props.good
   const neutral = props.neutral
   const bad = props.bad
+
   const all = good + neutral + bad
+
+  if (all===0) {
+    return <p>No feedback given</p>
+  }
+
   const average = (good * 1 + neutral * 0 + bad * -1)/all
   const positive = good / all * 100
 
   
 
-return <div><Count category='good' value={good} />
-<Count category='neutral' value={neutral} />
-<Count category='bad' value={bad} /><p>all {all}</p>
-<Average average={average} total={all} /><Positive positive={positive} /></div>
+  return <div><Count category='good' value={good} />
+  <Count category='neutral' value={neutral} />
+  <Count category='bad' value={bad} /><p>all {all}</p>
+  <Average average={average} total={all} /><Positive positive={positive} /></div>
 }
 
 const App = () => {
