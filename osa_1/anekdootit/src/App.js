@@ -13,6 +13,8 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(new Uint8Array(anecdotes.length))
+  // set the first as most popular when all have 0 votes
+  const [best, setBest] = useState(0)
 
   const randomAnecdote = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length))
@@ -22,15 +24,25 @@ const App = () => {
     const copy = [...points]
     copy[selected] += 1
     setPoints(copy)
+
+    if (copy[best] < copy[selected]) {
+      setBest(selected)
+    }
   }
 
   return (
     <div>
+      <p><font size="+2"><b>Anecdote of the day</b></font></p>
       {anecdotes[selected]}
       <p>has  {points[selected]} votes</p>
       <div>
         <button onClick={() => vote()}>vote</button>
         <button onClick={randomAnecdote}>next anecdote</button>
+      </div>
+      <div>
+        <p><font size="+2"><b>Anecdote with most votes</b></font></p>
+          {anecdotes[best]}
+          <p>has {points[best]} votes</p>
       </div>
     </div>
   )
