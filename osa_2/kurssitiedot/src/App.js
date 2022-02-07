@@ -30,26 +30,44 @@ const Course = ({course}) => {
     )
   }
 
+  const Total = ({course}) => {
+    let total = 0
+
+    for (let i = 0; i < course.parts.length; i++) {
+      total += course.parts[i].exercises
+    }
+    
+    return (
+      <div>
+        <p><b>total of {total} exercises</b></p>
+      </div>
+    )
+  }
+  
+
+  /*
+  const Total = ({course}) => {
+    const total = course.parts.reduce((sum, parts) =>
+      sum + parts.exercises, 0)
+
+    return (
+      <div>
+        <p><b>total of {total} exercises</b></p>
+      </div>
+    )
+  }
+
+  */
   
   return (
     <div>
       <Header course={course} />
       <Content course={course} />
+      <Total course={course} />
     </div>
   )
 }
 
-
-/*
-const Total = (props) => {
-  return (
-    <div>
-      <p>Number of exercises {props.parts[0].exercises 
-      + props.parts[1].exercises + props.parts[2].exercises}</p>
-    </div>
-  )
-}
-*/
 
 const App = () => {
   const course = {
@@ -70,6 +88,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
