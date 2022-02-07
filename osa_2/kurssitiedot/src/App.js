@@ -30,6 +30,7 @@ const Course = ({course}) => {
     )
   }
 
+  /*
   const Total = ({course}) => {
     let total = 0
 
@@ -43,9 +44,8 @@ const Course = ({course}) => {
       </div>
     )
   }
-  
+  */
 
-  /*
   const Total = ({course}) => {
     const total = course.parts.reduce((sum, parts) =>
       sum + parts.exercises, 0)
@@ -57,7 +57,6 @@ const Course = ({course}) => {
     )
   }
 
-  */
   
   return (
     <div>
