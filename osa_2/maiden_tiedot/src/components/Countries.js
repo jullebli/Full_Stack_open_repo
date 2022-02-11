@@ -1,11 +1,16 @@
 import React from 'react'
 import CountryInformation from './CountryInformation'
 
-const Countries = ({countries, filterValue}) => {
+const Countries = ({countries, filterValue, handleButton}) => {
 
   const countriesToShow = countries.filter(country => 
     country.name.common.toLowerCase().includes(filterValue.toLowerCase()))
-    
+
+const show = (event, {country}) => {
+  event.preventDefault();
+  handleButton({country})
+}
+  
     if (filterValue === '') {
         return (
             <p></p>
@@ -26,7 +31,7 @@ const Countries = ({countries, filterValue}) => {
       return (
         <div>
           {countriesToShow.map(country => 
-            <p key={country.name.common}>{country.name.common}</p>
+            <p key={country.name.common}>{country.name.common}  <button onClick={(event) => show(event,{country})}>show</button></p>
           )}
         </div>
     )  

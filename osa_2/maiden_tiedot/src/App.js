@@ -12,6 +12,10 @@ function App() {
     setFilterValue(event.target.value)
   }
 
+  const handleShowButton = ({country}) => {
+    setFilterValue(country.name.common)
+  }
+
   useEffect(() => {
     axios
       .get('https://restcountries.com/v3/all')
@@ -23,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <Filter value={filterValue} onChange={handleFilterChange} />
-      <Countries countries={countries} filterValue={filterValue} />
+      <Countries countries={countries} filterValue={filterValue} handleButton={handleShowButton} />
     </div>
   );
 }
