@@ -10,7 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterValue, setFilterValue] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [message, setMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     phonebookService
@@ -33,13 +34,24 @@ const App = () => {
           .update(changedPerson)
             .then (response => {
               setPersons(persons.map(person => person.id !== id ? person : response))
-              setErrorMessage(
-                `Changed number of ${person.name}`
+              setMessage(
+                `Changed number of ${changedPerson.name}`
               )
               setTimeout(() => {
-                setErrorMessage(null)
+                setMessage(null)
               }, 3000)
-            })            
+            })
+            .catch(() => {
+              setMessage(
+                `Information of ${changedPerson.name} has already been removed from server`
+              )
+              setIsError(true)
+              setTimeout(() => {
+                setMessage(null)
+                setIsError(false)
+                }, 3000  )
+              setPersons(persons.filter(n => n.id !== id))
+            })         
       }
 
     } else {
@@ -48,11 +60,11 @@ const App = () => {
         .create(newPerson)
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson))
-            setErrorMessage(
+            setMessage(
               `Added ${newPerson.name}`
             )
             setTimeout(() => {
-              setErrorMessage(null)
+              setMessage(null)
             }, 3000)
           })
     }
@@ -63,16 +75,30 @@ const App = () => {
 
   const removePerson = (event, {person}) => {
     event.preventDefault()
+    const removedName = person.name
     if (window.confirm(`Delete ${person.name} ?`)) {
       phonebookService
         .remove(person)
-          setPersons(persons.filter(n => n.id !== person.id))
-          setErrorMessage(
-            `Deleted ${person.name}`
+        .then(person => {
+          
+          setMessage(
+            `Deleted ${removedName}`
           )
           setTimeout(() => {
-            setErrorMessage(null)
-          }, 3000)   
+            setMessage(null)
+          }, 3000)
+        })
+        .catch(() => {
+          setMessage(
+            `Information of ${removedName} has already been removed from server`
+          )
+          setIsError(true)
+          setTimeout(() => {
+            setMessage(null)
+            setIsError(false)
+          }, 3000)
+        })
+        setPersons(persons.filter(n => n.id !== person.id))  
     }
   }
 
@@ -91,7 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={message} isError={isError}/>
       <Filter value={filterValue} onChange={handleFilterChange} />
       
       <h3>add a new</h3>
