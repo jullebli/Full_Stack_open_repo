@@ -1,10 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-console.log('inside blogsRouterfile')
-
 blogsRouter.get('/', (request, response) => {
-  console.log('enter blogsRouter get')
     Blog
       .find({})
       .then(blogs => {
