@@ -1,3 +1,5 @@
+const middleware = require('./middleware')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -11,14 +13,14 @@ const totalLikes = (blogs) => {
 
 const favoriteBlog = (blogs) => {
   const reducer = (mostLikedBlog, blog) => {
-    //console.log('mostLikedBlog, blog', mostLikedBlog, blog)
-    //console.log('mostLikedBlog.likes, blog.likes', mostLikedBlog.likes, blog.likes)
     if (mostLikedBlog.likes < blog.likes) {
       mostLikedBlog = blog
     }
     return mostLikedBlog
   }
-  return blogs.reduce(reducer, blogs[0])
+  const resultBlog = blogs.reduce(reducer, blogs[0])
+  return middleware.blogJSONTrimmer(resultBlog)
+
 }
 
 module.exports = {

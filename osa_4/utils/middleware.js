@@ -10,14 +10,26 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error:error.message })
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
 }
 
+const blogJSONTrimmer = (blog) => {
+  if (blog) {
+    return {
+      title: blog.title,
+      author: blog.author,
+      likes: blog.likes
+    }
+  } else {
+    return undefined
+  }
+}
 
 module.exports = {
   unknownEndPoint,
-  errorHandler
+  errorHandler,
+  blogJSONTrimmer
 }

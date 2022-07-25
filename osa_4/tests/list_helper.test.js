@@ -137,34 +137,28 @@ describe('favoriteBlog', () => {
   test('is the only blog in a list of one blog', () => {
     const expectedBlog =
     {
-      _id: '5a422b891b54a676234d17fa',
       title: 'First class tests',
       author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      __v: 0
+      likes: 10
     }
-    console.log('test is the only blog in a list of one blog')
-    console.log('expectedBlog', expectedBlog)
+    //console.log('test is the only blog in a list of one blog')
+    //console.log('expectedBlog', expectedBlog)
     const resultBlog = listHelper.favoriteBlog(listWithOneBlog)
-    console.log('resultBlog', resultBlog)
+    console.log('favoriteBlog', resultBlog)
     expect(resultBlog).toEqual(expectedBlog)
   })
 
   test('is correct in a list of four blog', () => {
     const expectedBlog =
     {
-      _id: '5a422b3a1b54a676234d17f9',
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      __v: 0
+      likes: 12
     }
-    console.log('test is the correct blog in a list of four blogs')
-    console.log('expectedBlog', expectedBlog)
+    //console.log('test is the correct blog in a list of four blogs')
+    //console.log('expectedBlog', expectedBlog)
     const resultBlog = listHelper.favoriteBlog(listWithFourBlogs)
-    console.log('resultBlog', resultBlog)
+    console.log('favoriteBlog', resultBlog)
     expect(resultBlog).toEqual(expectedBlog)
   })
 })
