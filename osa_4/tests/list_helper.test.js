@@ -1,8 +1,7 @@
 const listHelper = require('../utils/list_helper')
 
 test('dummy returns one', () => {
-  const blogs = []
-  const result = listHelper.dummy(blogs)
+  const result = listHelper.dummy([])
   expect(result).toBe(1)
 })
 
@@ -117,7 +116,7 @@ describe('favoriteBlog', () => {
       title: 'TDD harms architecture',
       author: 'Robert C. Martin',
       url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
+      likes: 12,
       __v: 0
     },
     {
@@ -141,10 +140,8 @@ describe('favoriteBlog', () => {
       author: 'Robert C. Martin',
       likes: 10
     }
-    //console.log('test is the only blog in a list of one blog')
-    //console.log('expectedBlog', expectedBlog)
+
     const resultBlog = listHelper.favoriteBlog(listWithOneBlog)
-    console.log('favoriteBlog', resultBlog)
     expect(resultBlog).toEqual(expectedBlog)
   })
 
@@ -155,10 +152,8 @@ describe('favoriteBlog', () => {
       author: 'Edsger W. Dijkstra',
       likes: 12
     }
-    //console.log('test is the correct blog in a list of four blogs')
-    //console.log('expectedBlog', expectedBlog)
+
     const resultBlog = listHelper.favoriteBlog(listWithFourBlogs)
-    console.log('favoriteBlog', resultBlog)
     expect(resultBlog).toEqual(expectedBlog)
   })
 })

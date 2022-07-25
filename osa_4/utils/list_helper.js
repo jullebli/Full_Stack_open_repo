@@ -20,7 +20,6 @@ const favoriteBlog = (blogs) => {
   }
   const resultBlog = blogs.reduce(reducer, blogs[0])
   return middleware.blogJSONTrimmer(resultBlog)
-
 }
 
 module.exports = {
