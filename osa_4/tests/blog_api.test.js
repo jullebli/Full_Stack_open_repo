@@ -73,6 +73,42 @@ test('blog will have 0 likes if not defined', async () => {
   expect(likes).toEqual(0)
 })
 
+test('blog without title will not be added', async () => {
+  const newBlog = {
+    author: 'Mysterious coders',
+    url: 'www.notarealaddress.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+  const authors = response.body.map(x => x.author)
+  const urls = response.body.map(x => x.url)
+
+  expect(authors).not.toContain('Mysterious coders')
+  expect(urls).not.toContain('www.notarealaddress.com')
+})
+
+test('blog without url and title will not be added', async () => {
+  const newBlog = {
+    author: 'Mysterious coders',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+  const authors = response.body.map(x => x.author)
+
+  expect(authors).not.toContain('Mysterious coders')
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
