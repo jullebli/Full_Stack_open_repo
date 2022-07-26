@@ -27,18 +27,12 @@ const mostBlogs = (blogs) => {
     blogs
       .reduce((authors, blog) => {
         authors[blog.author] = authors[blog.author] + 1 || 1
-
-        //console.log('authors[blog.author]', authors[blog.author])
-        //console.log('authors', authors)
         return authors
       }, {})
-
-  //console.log('blogAmountByAuthor inside mostBlogs', blogAmountByAuthor)
 
   let mostBlogs = null
   let authorOfMostBlogs = null
   for (const [key, value] of Object.entries(blogAmountByAuthor)) {
-    //console.log('key, value', key, value)
     if (mostBlogs < value) {
       mostBlogs = value
       authorOfMostBlogs = key
@@ -46,11 +40,10 @@ const mostBlogs = (blogs) => {
   }
 
   const result = authorOfMostBlogs === null
-    ? undefined : { 'author': authorOfMostBlogs, 'blogs': mostBlogs }
-  //console.log('mostBlogs result', result)
+    ? undefined : { author: authorOfMostBlogs, blogs: mostBlogs }
+
   return result
 }
-
 
 module.exports = {
   dummy,

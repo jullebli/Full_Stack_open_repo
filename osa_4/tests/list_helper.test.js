@@ -129,7 +129,7 @@ describe('favoriteBlog', () => {
     }
   ]
 
-  test('is undefined when list is empty', () => {
+  test('is undefined when blog list is empty', () => {
     expect(listHelper.favoriteBlog([])).toEqual(undefined)
   })
 
@@ -219,11 +219,17 @@ describe('mostBlogs', () => {
       __v: 0
     }
   ]
-  test('is undefined for an empty blog list', () => {
-    //console.log('listHelper.mostBlogs(listWithSixBlogs)', listHelper.mostBlogs(listWithSixBlogs))
+  test('is undefined when blog list is empty', () => {
     expect(listHelper.mostBlogs([])).toEqual(undefined)
   })
-  /*test('is undefined if the list is empty', () => {
-    expect(listHelper.mostBlogs([])).toEqual(undefined)
-  })*/
+
+  test('is correct for a blog list of one blog', () => {
+    const expected = { author: 'Edsger W. Dijkstra', blogs: 1 }
+    expect(listHelper.mostBlogs(listWithOneBlog)).toEqual(expected)
+  })
+
+  test('is correct for a list of six blogs', () => {
+    const expected = { author: 'Robert C. Martin', blogs: 3 }
+    expect(listHelper.mostBlogs(listWithSixBlogs)).toEqual(expected)
+  })
 })
