@@ -25,6 +25,14 @@ test('there are six blogs', async () => {
   expect(response.body).toHaveLength(6)
 })
 
+test('blog ids are in correct format in database', async () => {
+  const response = await api.get('/api/blogs')
+
+  for (let blog of response.body) {
+    expect(blog.id).toBeDefined()
+  }
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
