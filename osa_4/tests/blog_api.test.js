@@ -109,6 +109,26 @@ test('blog without url and title will not be added', async () => {
   expect(authors).not.toContain('Mysterious coders')
 })
 
+test('valid id will delete blog from database', async () => {
+  const blogsAtBeginning = await (await helper.blogsInDb()).length
+  const someBlogInDb = await Blog.findOne(helper.initialBlogs[0])
+  const toBeDeletedId = someBlogInDb.id
+
+  await api
+    .delete(`/api/blogs/${toBeDeletedId}`)
+    .expect(204)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(x => x.title)
+  const ids = response.body.map(x => x.id)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(blogsAtBeginning - 1)
+  expect(titles).not.toContain(helper.initialBlogs[0].title)
+  expect(ids).not.toContain(toBeDeletedId)
+
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
