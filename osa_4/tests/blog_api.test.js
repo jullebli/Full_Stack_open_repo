@@ -3,6 +3,8 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 beforeEach(async () => {
@@ -198,6 +200,92 @@ test('updating with invalid id returns code 400 and blogs not updated', async ()
   expect(likes).not.toContain(5000)
 
 })
+
+describe('when there is initially one user at db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'initialTestUser', passwordHash })
+
+    await user.save()
+  })
+
+  test('user can be created with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'roller',
+      name: 'Rolle Järvinen',
+      password: 'joku helppo'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('user with same username cannot be created', async () => {
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const userWithTakenUsername = {
+      username: 'initialTestUser',
+      name: 'Ronja Virtanen',
+      password: passwordHash
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(userWithTakenUsername)
+      .expect(400)
+
+    const response = await api.get('/api/users')
+    const names = response.body.map(u => u.name)
+
+    expect(result.body.error).toContain('Error, expected `username` to be unique')
+
+    expect(response.body).toHaveLength(1)
+    expect(names).not.toContain('Ronja Virtanen')
+
+  })
+})
+describe('when there are initially three users at db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'initialTestUserFirst', passwordHash })
+
+    const passwordHash2 = await bcrypt.hash('password', 10)
+    const user2 = new User({ username: 'initialTestUserSecond', passwordHash2 })
+
+    const passwordHash3 = await bcrypt.hash('some secret', 10)
+    const user3 = new User({ username: 'initialTestUserThird', passwordHash3 })
+
+    await User.insertMany([user, user2, user3])
+
+  })
+  test('users are returned as json', async () => {
+    await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('all three users are returned', async () => {
+    const response = await api.get('/api/users')
+
+    expect(response.body).toHaveLength(3)
+  })
+})
+
 
 afterAll(() => {
   mongoose.connection.close()
