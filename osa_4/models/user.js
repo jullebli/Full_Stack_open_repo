@@ -8,11 +8,17 @@ const userSchema = mongoose.Schema({
     required: true,
     unique: true
   },
-  name:String,
+  name: String,
   passwordHash: {
     type: String,
     required: true
-  }
+  },
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ]
 })
 //password length and if undefined is checked in controller
 
