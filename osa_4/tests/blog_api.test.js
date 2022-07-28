@@ -206,7 +206,7 @@ describe('when there is initially one user at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'initialTestUser', passwordHash })
+    const user = new User({ username: 'initialTestUser', passwordHash: passwordHash })
 
     await user.save()
   })
@@ -234,11 +234,10 @@ describe('when there is initially one user at db', () => {
   })
 
   test('user with same username cannot be created', async () => {
-    const passwordHash = await bcrypt.hash('sekret', 10)
     const userWithTakenUsername = {
       username: 'initialTestUser',
       name: 'Ronja Virtanen',
-      password: passwordHash
+      password: 'password'
     }
 
     const result = await api
@@ -253,6 +252,91 @@ describe('when there is initially one user at db', () => {
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Ronja Virtanen')
+  })
+
+  test('user with username length of 2 characters cannot be created', async () => {
+    const newUser = {
+      username: 'Bo',
+      name: 'Bo Henriksson',
+      password: 'hemlighet'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const response = await api.get('/api/users')
+    const names = response.body.map(u => u.name)
+
+    expect(result.body.error).toContain('is shorter than the minimum allowed length (3)')
+
+    expect(response.body).toHaveLength(1)
+    expect(names).not.toContain('Bo Henriksson')
+
+  })
+
+  test('user without username cannot be created', async () => {
+    const newUser = {
+      name: 'Silvia Larsson',
+      password: 'hemlig'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const response = await api.get('/api/users')
+    const names = response.body.map(u => u.name)
+
+    expect(result.body.error).toContain('User validation failed: username: Path `username` is required')
+
+    expect(response.body).toHaveLength(1)
+    expect(names).not.toContain('Silvia Larsson')
+
+  })
+
+  test('user without password cannot be created', async () => {
+    const newUser = {
+      username: 'lars85',
+      name: 'Sven Larsson'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const response = await api.get('/api/users')
+    const names = response.body.map(u => u.name)
+
+    expect(result.body.error).toContain('password is required')
+
+    expect(response.body).toHaveLength(1)
+    expect(names).not.toContain('Sven Larsson')
+
+  })
+
+  test('user with password length of 2 characters cannot be created', async () => {
+    const newUser = {
+      username: 'failing',
+      name: 'Silja Kallio',
+      password: 'no'
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const response = await api.get('/api/users')
+    const names = response.body.map(u => u.name)
+
+    expect(result.body.error).toContain('password must be at least 3 characters long')
+
+    expect(response.body).toHaveLength(1)
+    expect(names).not.toContain('Silja Kallio')
 
   })
 })
@@ -261,13 +345,13 @@ describe('when there are initially three users at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'initialTestUserFirst', passwordHash })
+    const user = new User({ username: 'initialTestUserFirst', passwordHash: passwordHash })
 
     const passwordHash2 = await bcrypt.hash('password', 10)
-    const user2 = new User({ username: 'initialTestUserSecond', passwordHash2 })
+    const user2 = new User({ username: 'initialTestUserSecond', passwordHash: passwordHash2 })
 
     const passwordHash3 = await bcrypt.hash('some secret', 10)
-    const user3 = new User({ username: 'initialTestUserThird', passwordHash3 })
+    const user3 = new User({ username: 'initialTestUserThird', passwordHash: passwordHash3 })
 
     await User.insertMany([user, user2, user3])
 
@@ -285,7 +369,6 @@ describe('when there are initially three users at db', () => {
     expect(response.body).toHaveLength(3)
   })
 })
-
 
 afterAll(() => {
   mongoose.connection.close()
