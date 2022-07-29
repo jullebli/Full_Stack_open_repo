@@ -22,7 +22,6 @@ describe('(Even) without authorization token', () => {
 
   test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
-
     expect(response.body).toHaveLength(6)
   })
 
@@ -37,8 +36,6 @@ describe('(Even) without authorization token', () => {
   test('deleting returns code 401 and none is deleted', async () => {
     const blogsAtBeginning = await helper.blogsInDb()
     const someBlog = await Blog.findOne({})
-    console.log('someBlog', someBlog)
-    console.log('someBlog.id', someBlog.id)
 
     await api
       .delete(`/api/blogs/${someBlog.id}`)
@@ -46,9 +43,9 @@ describe('(Even) without authorization token', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtBeginning.length)
-
   })
 })
+
 describe('Given correct authorization token', () => {
   let authorization
 
@@ -71,6 +68,7 @@ describe('Given correct authorization token', () => {
 
     authorization = `bearer ${result.body.token}`
   })
+
   test('a valid blog can be added', async () => {
 
     const blogsAtBeginning = await helper.blogsInDb()
@@ -94,7 +92,6 @@ describe('Given correct authorization token', () => {
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtBeginning.length + 1)
     expect(titles).toContain('Python for dummies')
-
   })
 
   test('blog will have 0 likes if not defined', async () => {
@@ -186,7 +183,6 @@ describe('Given correct authorization token', () => {
     expect(blogsAfterDeleting).toHaveLength(blogsBeforeDeleting.length - 1)
     expect(titles).not.toContain('Java for dummies')
     expect(ids).not.toContain(toBeDeletedId)
-
   })
 
   test('deleting with invalid id returns code 400 and none is deleted', async () => {
@@ -199,7 +195,6 @@ describe('Given correct authorization token', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtBeginning.length)
-
   })
 
   test('blog can be updated without token', async () => {
@@ -230,7 +225,6 @@ describe('Given correct authorization token', () => {
     expect(author).toEqual('Updated author')
     expect(url).toEqual('Updated url')
     expect(likes).toEqual(blog.likes + 5)
-
   })
 
   test('updating with invalid id returns code 400 and blogs not updated', async () => {
@@ -257,9 +251,9 @@ describe('Given correct authorization token', () => {
     const response = await api.get('/api/blogs')
     const likes = response.body.map(x => x.likes)
     expect(likes).not.toContain(5000)
-
   })
 })
+
 describe('When there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
@@ -332,7 +326,6 @@ describe('When there is initially one user at db', () => {
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Bo Henriksson')
-
   })
 
   test('user without username cannot be created', async () => {
@@ -353,7 +346,6 @@ describe('When there is initially one user at db', () => {
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Silvia Larsson')
-
   })
 
   test('user without password cannot be created', async () => {
@@ -374,7 +366,6 @@ describe('When there is initially one user at db', () => {
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Sven Larsson')
-
   })
 
   test('user with password length of 2 characters cannot be created', async () => {
@@ -396,9 +387,9 @@ describe('When there is initially one user at db', () => {
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Silja Kallio')
-
   })
 })
+
 describe('When there are initially three users at db', () => {
   let userCredentials
   let user2Credentials
@@ -429,6 +420,7 @@ describe('When there are initially three users at db', () => {
     await User.insertMany([user, user2, user3])
 
   })
+
   test('users are returned as json', async () => {
     await api
       .get('/api/users')
