@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer 
+Authorization: bearer insertTokenHere
 
 {
-  "title": "Blog7",
-  "author": "Author7",
-  "url": "www.test7.fi",
+  "title": "BlogForSome3",
+  "author": "Author",
+  "url": "www.test.fi",
   "likes": 6
 }

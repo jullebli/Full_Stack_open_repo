@@ -1,2 +1,2 @@
-DELETE http://localhost:3003/api/blogs/62e28ccdc438e920f55af982
-Authorization: bearer 
+DELETE http://localhost:3003/api/blogs/insertBlogIdHere
+Authorization: bearer insertTokenHere
