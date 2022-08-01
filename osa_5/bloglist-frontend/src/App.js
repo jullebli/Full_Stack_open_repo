@@ -11,7 +11,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+  //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
     blogService
@@ -102,55 +102,42 @@ const App = () => {
           <Blog key={blog.id} blog={blog} />
         )}
       <div>
-        <BlogForm handleAddBlog={handleAddBlog} newBlog={newBlog} setNewBlog={setNewBlog} />
+        <BlogForm addBlog={addBlog} />
       </div>
     </div>
   )
 
-  const handleAddBlog = (event) => {
-    event.preventDefault()
-    //console.log('addBlog user', user)
+  const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
 
     const blogObject = {
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
-      user: user
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
     }
 
-    //console.log('tries to create a new blog')
-    //console.log('adBlog blogObject', blogObject)
+    const addedBlog = await blogService
+      .create(blogObject)
 
-    try {
-      blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-          console.log('inside try newBlog', newBlog)
-          setNewBlog({ title: '', author: '', url: '' })
-        })
-    } catch (exception) {
-      setErrorMessage(`creating a blog failed ${exception.message}`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    //console.log('newBlog', newBlog)
-  }
+    const newBlogs = await blogService.getAll()
+    setBlogs(newBlogs)
 
+  /*catch (exception) {
+    setErrorMessage(`creating a blog failed ${exception.message}`)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000) */
 
-  //console.log('newBlog before last return')
-  return (
-    <div>
-      <Notification message={errorMessage} />
+}
 
-      {user === null ?
-        unloggedMode() :
-        loggedInMode()}
-    </div>
-  )
+return (
+  <div>
+    <Notification message={errorMessage} />
+
+    {user === null ?
+      unloggedMode() :
+      loggedInMode()}
+  </div>
+)
 }
 
 export default App
-
-//{user === null ? <h2>User null</h2> : <h2>User not null</h2>}
