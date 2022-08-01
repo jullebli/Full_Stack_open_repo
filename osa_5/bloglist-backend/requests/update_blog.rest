@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/insertBlogIdHere
+Content-Type: application/json
+
+{
+  "title": "Updated title",
+  "author": "Updated author",
+  "url": "www.updated.fi",
+  "likes": 100
+}
