@@ -3,12 +3,10 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 const unknownEndPoint = (request, response) => {
-  logger.info('debug: unknownEndPoint')
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
 const errorHandler = (error, request, response, next) => {
-  logger.info('debug: errorHandler')
   logger.error(error.message)
 
   if (error.name === 'CastError') {
@@ -42,7 +40,7 @@ const userExtractor = async (request, response, next) => {
     request.user = await User.findById(decodedToken.id)
   }
   next()
-}
+} //another way: combine extractors. Instead of setting request.token, if (decodedToken) then set request.user
 
 const blogJSONTrimmer = (blog) => {
   if (blog) {

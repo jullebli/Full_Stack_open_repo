@@ -9,6 +9,7 @@ const totalLikes = (blogs) => {
     return sum + blog.likes
   }
   return blogs.reduce(reducer, 0)
+  //another way: return blogs.reduce((sum, b) => sum + b.likes,0) and before this if no blogs then return 0
 }
 
 const favoriteBlog = (blogs) => {
@@ -20,6 +21,7 @@ const favoriteBlog = (blogs) => {
   }
   const resultBlog = blogs.reduce(reducer, blogs[0])
   return middleware.blogJSONTrimmer(resultBlog)
+  //another way: if zero blogs return 0, return blogs.sort((a, b) => b.likes - a.likes )[0]
 }
 
 const mostBlogs = (blogs) => {
@@ -43,6 +45,7 @@ const mostBlogs = (blogs) => {
     ? undefined : { author: authorOfMostBlogs, blogs: mostBlogs }
 
   return result
+  //another way: similar to mostLikes another way
 }
 
 const mostLikes = (blogs) => {
@@ -66,6 +69,19 @@ const mostLikes = (blogs) => {
     ? undefined : { author: authorOfMostLikes, likes: mostLikes }
 
   return result
+  /* another way:
+const byAuthor = _.groupBy(blogs, (b) => b.author)
+  const likeCounts = Object.keys(byAuthor).map(name => {
+    return {
+      name,
+      likes: byAuthor[name].reduce((s, b) => s + b.likes, 0)
+    }
+  })
+
+
+  return likeCounts.sort((a, b) => b.likes - a.likes )[0].name
+}
+  */
 }
 
 module.exports = {

@@ -4,6 +4,7 @@ const Blog = require('../models/blog')
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
     .populate('user', { username: 1, name: 1 })
+  //another way: find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -19,6 +20,7 @@ blogsRouter.post('/', async (request, response) => {
       author: body.author,
       url: body.url,
       user: user._id
+      //another way: const blog = new Blog({ ...request.body, user: user.id })
     })
 
     const savedBlog = await blog.save()
@@ -54,6 +56,18 @@ blogsRouter.delete('/:id', async (request, response) => {
     response.status(401).json(
       { error: 'user not authorized to delete this blog' })
   }
+
+  /* another way:
+  if (!blogToDelete ) {
+    return response.status(204).end()
+  }
+
+  if ( blogToDelete.user && blogToDelete.user.toString() !== request.user.id ) {
+    return response.status(401).json({
+      error: 'only the creator can delete a blog'
+    })
+  }
+  */
 })
 
 blogsRouter.put('/:id', async (request, response) => {
@@ -64,8 +78,16 @@ blogsRouter.put('/:id', async (request, response) => {
     url: request.body.url,
     likes: request.body.likes,
   }
-  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-  response.json(savedBlog)
+  //another way: const blog = request.body
+
+  const updatedBlog = await Blog
+    .findByIdAndUpdate(
+      request.params.id,
+      blog,
+      { new: true, runValidators: true, context: 'query' }
+    )
+
+  response.json(updatedBlog)
 })
 
 module.exports = blogsRouter
