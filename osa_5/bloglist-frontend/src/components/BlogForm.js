@@ -1,24 +1,29 @@
 import { useState } from "react"
 
 const BlogForm = ({ addBlog }) => {
+  console.log('BlogForm')
 
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
   const handleTitleChange = (event) => {
+    console.log('handleTitleChange')
     setNewTitle(event.target.value)
   }
 
   const handleAuthorChange = (event) => {
+    console.log('handleAuthorChange')
     setNewAuthor(event.target.value)
   }
 
   const handleUrlChange = (event) => {
+    console.log('handleUrlChange')
     setNewUrl(event.target.value)
   }
 
   const handleAddBlog = (event) => {
+    console.log('handleAddBlog')
     event.preventDefault()
     addBlog({ newTitle, newAuthor, newUrl })
     setNewTitle('')
