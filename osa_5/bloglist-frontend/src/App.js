@@ -19,6 +19,15 @@ const App = () => {
       )
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('loggin in with', username, password)
@@ -27,6 +36,11 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
+
+      window.localStorage.setItem(
+        'loggedBloglistUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -36,6 +50,16 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogOut = async () => {
+    console.log('logging out ', username, password)
+
+    window.localStorage.removeItem('loggedBloglistUser')
+    blogService.setToken('')
+    setUser(null)
+    setUsername('')
+    setPassword('')
   }
 
   const unloggedMode = () => {
@@ -71,7 +95,8 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <p>{user.name} logged in</p>
+        <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
+
         {blogs.filter(blog => blog.user.name === user.name)
           .map(blog =>
             <Blog key={blog.id} blog={blog} />
