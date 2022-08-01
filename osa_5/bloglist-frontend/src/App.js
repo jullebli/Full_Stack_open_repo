@@ -14,7 +14,7 @@ const App = () => {
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
-    console.log('useEffect 1')
+    //console.log('useEffect 1')
     blogService
       .getAll()
       .then(initialBlogs =>
@@ -23,7 +23,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    console.log('useEffect 2')
+    //console.log('useEffect 2')
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -33,9 +33,9 @@ const App = () => {
   }, [])
 
   const timedNotification = ({ message }) => {
-    console.log('timedNotification')
-    console.log('timedNotification message[0]', message[0])
-    console.log('timedNotification message[1]', message[1])
+    //console.log('timedNotification')
+    //console.log('timedNotification message[0]', message[0])
+    //console.log('timedNotification message[1]', message[1])
 
     if (!message) {
       return null
@@ -52,7 +52,7 @@ const App = () => {
   }
 
   const handleLogin = async (event) => {
-    console.log('handleLogin')
+    //console.log('handleLogin')
     event.preventDefault()
     //console.log('loggin in with', username, password)
 
@@ -75,8 +75,8 @@ const App = () => {
   }
 
   const handleLogOut = () => {
-    console.log('handleLogOut')
-    console.log('logging out ', username, password)
+    //console.log('handleLogOut')
+    //console.log('logging out ', username, password)
 
     window.localStorage.removeItem('loggedBloglistUser')
     blogService.setToken('')
@@ -87,7 +87,7 @@ const App = () => {
   }
 
   const unloggedMode = () => {
-    console.log('unloggedMode')
+    //console.log('unloggedMode')
     return (
       <div>
         <h2>log in to application</h2>
@@ -118,7 +118,7 @@ const App = () => {
 
 
   const loggedInMode = () => {
-    console.log('loggedInMode')
+    //console.log('loggedInMode')
     return (
       <div>
         <h2>blogs</h2>
@@ -136,7 +136,7 @@ const App = () => {
   }
 
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
-    console.log('addBlog')
+    //console.log('addBlog')
     const blogObject = {
       title: newTitle,
       author: newAuthor,
@@ -157,9 +157,9 @@ const App = () => {
       setMessage([`adding a blog failed. Error message: ${exception.message}`, true])
     }
   }
-  console.log('main return')
-  console.log('message[0] before main return', message[0])
-  console.log('message[1] before main return', message[1])
+  //console.log('main return')
+  //console.log('message[0] before main return', message[0])
+  //console.log('message[1] before main return', message[1])
   return (
     <div>
       {message[0] === null ?

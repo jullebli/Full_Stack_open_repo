@@ -8,22 +8,22 @@ const BlogForm = ({ addBlog }) => {
   const [newUrl, setNewUrl] = useState('')
 
   const handleTitleChange = (event) => {
-    console.log('handleTitleChange')
+    //console.log('handleTitleChange')
     setNewTitle(event.target.value)
   }
 
   const handleAuthorChange = (event) => {
-    console.log('handleAuthorChange')
+    //console.log('handleAuthorChange')
     setNewAuthor(event.target.value)
   }
 
   const handleUrlChange = (event) => {
-    console.log('handleUrlChange')
+    //console.log('handleUrlChange')
     setNewUrl(event.target.value)
   }
 
   const handleAddBlog = (event) => {
-    console.log('handleAddBlog')
+    //console.log('handleAddBlog')
     event.preventDefault()
     addBlog({ newTitle, newAuthor, newUrl })
     setNewTitle('')
