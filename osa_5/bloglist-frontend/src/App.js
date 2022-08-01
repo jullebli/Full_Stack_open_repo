@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
+import blogService from './services/blog'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -10,12 +11,13 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
     blogService
       .getAll()
-      .then(blogs =>
-        setBlogs(blogs)
+      .then(initialBlogs =>
+        setBlogs(initialBlogs)
       )
   }, [])
 
@@ -52,7 +54,7 @@ const App = () => {
     }
   }
 
-  const handleLogOut = async () => {
+  const handleLogOut = () => {
     console.log('logging out ', username, password)
 
     window.localStorage.removeItem('loggedBloglistUser')
@@ -62,49 +64,82 @@ const App = () => {
     setPassword('')
   }
 
-  const unloggedMode = () => {
-    return (
+  const unloggedMode = () => (
+    <div>
+      <h2>log in to application</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input
+            type='text'
+            value={username}
+            name='Username'
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            type='text'
+            value={password}
+            name='Password'
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type='submit'>login</button>
+      </form>
+    </div>
+  )
+
+
+  const loggedInMode = () => (
+    <div>
+      <h2>blogs</h2>
+      <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
+
+      {blogs.filter(blog => blog.user.name === user.name)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
       <div>
-        <h2>log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              type='text'
-              value={username}
-              name='Username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type='text'
-              value={password}
-              name='Password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type='submit'>login</button>
-        </form>
+        <BlogForm handleAddBlog={handleAddBlog} newBlog={newBlog} setNewBlog={setNewBlog} />
       </div>
-    )
+    </div>
+  )
+
+  const handleAddBlog = (event) => {
+    event.preventDefault()
+    //console.log('addBlog user', user)
+
+    const blogObject = {
+      title: newBlog.title,
+      author: newBlog.author,
+      url: newBlog.url,
+      user: user
+    }
+
+    //console.log('tries to create a new blog')
+    //console.log('adBlog blogObject', blogObject)
+
+    try {
+      blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+          console.log('inside try newBlog', newBlog)
+          setNewBlog({ title: '', author: '', url: '' })
+        })
+    } catch (exception) {
+      setErrorMessage(`creating a blog failed ${exception.message}`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+    //console.log('newBlog', newBlog)
   }
 
-  const loggedInMode = () => {
-    return (
-      <div>
-        <h2>blogs</h2>
-        <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
 
-        {blogs.filter(blog => blog.user.name === user.name)
-          .map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-      </div>
-    )
-  }
-
+  //console.log('newBlog before last return')
   return (
     <div>
       <Notification message={errorMessage} />
