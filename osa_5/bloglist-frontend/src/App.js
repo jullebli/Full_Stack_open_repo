@@ -16,7 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   //const [loginVisible, setLoginVisible] = useState(false)
   const blogFormRef = useRef()
-  const loginFormRef = useRef()
+  //const loginFormRef = useRef()
 
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
@@ -58,32 +58,6 @@ const App = () => {
       )
     }
   }
-
-  /*
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  } */
-  //</div><Togglable buttonLabel='login' ref={loginFormRef}>
-  //</div>/</Togglable></Togglable>/
 
   const handleLogin = async (event) => {
     event.preventDefault()
