@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blog'
-import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+
+import blogService from './services/blog'
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +14,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  //const [loginVisible, setLoginVisible] = useState(false)
+  const blogFormRef = useRef()
+  const loginFormRef = useRef()
+
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
@@ -29,6 +36,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
+      //setLoginVisible(false)
     }
   }, [])
 
@@ -51,26 +59,57 @@ const App = () => {
     }
   }
 
+  /*
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  } */
+  //</div><Togglable buttonLabel='login' ref={loginFormRef}>
+  //</div>/</Togglable></Togglable>/
+
   const handleLogin = async (event) => {
-    //console.log('handleLogin')
     event.preventDefault()
-    //console.log('loggin in with', username, password)
+    if (!username || !password) {
+      setMessage(['username or password missing', true])
+    } else {
+      //console.log('handleLogin')
+      //console.log('loggin in with', username, password)
 
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      window.localStorage.setItem(
-        'loggedBloglistUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-      setMessage(['login successful', false])
-    } catch (exception) {
-      setMessage(['wrong username or password', true])
+      try {
+        const user = await loginService.login({
+          username, password
+        })
+        //console.log('handleLogin user', user)
+        window.localStorage.setItem(
+          'loggedBloglistUser', JSON.stringify(user)
+        )
+        blogService.setToken(user.token)
+        setUser(user)
+        setUsername('')
+        setPassword('')
+        setMessage(['login successful', false])
+        //setLoginVisible(false)
+      } catch (exception) {
+        setMessage(['wrong username or password', true])
+      }
     }
   }
 
@@ -86,51 +125,21 @@ const App = () => {
     setMessage(['logout successfull', false])
   }
 
-  const unloggedMode = () => {
-    //console.log('unloggedMode')
-    return (
-      <div>
-        <h2>log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              type='text'
-              value={username}
-              name='Username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type='text'
-              value={password}
-              name='Password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type='submit'>login</button>
-        </form>
-      </div>
-    )
-  }
-
-
   const loggedInMode = () => {
     //console.log('loggedInMode')
     return (
       <div>
-        <h2>blogs</h2>
         <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
-
+        <div>
+          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+        </div>
+        <h2>Your blogs:</h2>
         {blogs.filter(blog => blog.user.name === user.name)
           .map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
-        <div>
-          <BlogForm addBlog={addBlog} />
-        </div>
       </div>
     )
   }
@@ -146,13 +155,12 @@ const App = () => {
     try {
       const addedBlog = await blogService
         .create(blogObject)
-
+      blogFormRef.current.toggleVisibility()
       const newBlogs = await blogService.getAll()
       setBlogs(newBlogs)
       if (addedBlog) {
         setMessage([`a new blog ${addedBlog.title} by ${addedBlog.author}`, false])
       }
-
     } catch (exception) {
       setMessage([`adding a blog failed. Error message: ${exception.message}`, true])
     }
@@ -165,9 +173,18 @@ const App = () => {
       {message[0] === null ?
         <Notification message={message[0]} error={message[1]} /> :
         timedNotification({ message })}
+      <h2>blogs</h2>
       {user === null ?
-        unloggedMode() :
-        loggedInMode()}
+      <Togglable buttonLabel='login'>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </Togglable>
+      : loggedInMode()}
     </div>
   )
 }

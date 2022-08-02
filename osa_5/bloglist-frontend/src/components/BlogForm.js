@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-const BlogForm = ({ addBlog }) => {
-  console.log('BlogForm')
+const BlogForm = ({ createBlog }) => {
+  //console.log('BlogForm')
 
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
@@ -22,10 +22,14 @@ const BlogForm = ({ addBlog }) => {
     setNewUrl(event.target.value)
   }
 
-  const handleAddBlog = (event) => {
+  const addBlog = (event) => {
     //console.log('handleAddBlog')
     event.preventDefault()
-    addBlog({ newTitle, newAuthor, newUrl })
+    createBlog({
+      newTitle,
+      newAuthor,
+      newUrl
+    })
     setNewTitle('')
     setNewAuthor('')
     setNewUrl('')
@@ -34,7 +38,7 @@ const BlogForm = ({ addBlog }) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleAddBlog}>
+      <form onSubmit={addBlog}>
         <div>
           title:
           <input
