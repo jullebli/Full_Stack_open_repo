@@ -8,7 +8,6 @@ const LoginForm = ({
   username,
   password
 }) => {
-  //console.log('unloggedMode')
 
   return (
     <div>
