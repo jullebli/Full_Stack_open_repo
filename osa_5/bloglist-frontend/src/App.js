@@ -99,27 +99,6 @@ const App = () => {
     setMessage(['logout successfull', false])
   }
 
-  const loggedInMode = () => {
-    //console.log('loggedInMode')
-    //console.log('loggedInMode blogs', blogs)
-    return (
-      <div>
-        <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
-        <div>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-        </div>
-        <h2>Your blogs:</h2>
-        {blogs.filter(blog => blog.user.name === user.name)
-          .sort((a,b) => b.likes - a.likes)
-          .map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-          )}
-      </div>
-    )
-  }
-
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
     //console.log('addBlog')
     const blogObject = {
@@ -158,18 +137,58 @@ const App = () => {
       const updatedBlog = await blogService.update(blogObject)
       //console.log('updateBlog response', updatedBlog)
       //setBlogs(blogs.concat(updatedBlog))
-      const newBlogs = await blogService.getAll()
-      setBlogs(newBlogs)
       if (updatedBlog) {
         setMessage([`you liked blog ${updatedBlog.title} by ${updatedBlog.author}`, false])
+        const newBlogs = await blogService.getAll()
+        setBlogs(newBlogs)
       }
     } catch (exception) {
       setMessage([`updating a blog failed. Error message: ${exception.message}`, true])
     }
   }
+
+  const deleteBlog = async ({ blog }) => {
+
+    console.log('deleteBlog blog', blog)
+    try {
+      const deletedBlog = await blogService.deleteBlog(blog)
+      console.log('deleteBlog() deletedBlog', deletedBlog)
+      if (!deletedBlog) {
+        setMessage([`you deleted blog ${blog.title} by ${blog.author}`, false])
+        const newBlogs = await blogService.getAll()
+        setBlogs(newBlogs)
+      }
+    } catch (exception) {
+      setMessage([`deleting the blog failed. Error message: ${exception.message}`, true])
+    }
+  }
   //console.log('main return')
   //console.log('message[0] before main return', message[0])
   //console.log('message[1] before main return', message[1])
+
+  const loggedInMode = () => {
+    //console.log('loggedInMode')
+    //console.log('loggedInMode blogs', blogs)
+    return (
+      <div>
+        <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
+        <div>
+          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+        </div>
+        <h2>Your blogs:</h2>
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map(blog =>
+            <Blog key={blog.id} blog={blog}
+              updateBlog={updateBlog} deleteBlog={deleteBlog}
+              loggedInUser={user} />
+          )}
+      </div>
+    )
+  }
+
   return (
     <div>
       {message[0] === null ?
