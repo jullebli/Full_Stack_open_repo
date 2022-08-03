@@ -149,17 +149,19 @@ const App = () => {
 
   const deleteBlog = async ({ blog }) => {
 
-    console.log('deleteBlog blog', blog)
-    try {
-      const deletedBlog = await blogService.deleteBlog(blog)
-      console.log('deleteBlog() deletedBlog', deletedBlog)
-      if (!deletedBlog) {
-        setMessage([`you deleted blog ${blog.title} by ${blog.author}`, false])
-        const newBlogs = await blogService.getAll()
-        setBlogs(newBlogs)
+    //console.log('deleteBlog blog', blog)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        const deletedBlog = await blogService.deleteBlog(blog)
+        //console.log('deleteBlog() deletedBlog', deletedBlog)
+        if (!deletedBlog) {
+          setMessage([`you deleted blog ${blog.title} by ${blog.author}`, false])
+          const newBlogs = await blogService.getAll()
+          setBlogs(newBlogs)
+        }
+      } catch (exception) {
+        setMessage([`deleting the blog failed. Error message: ${exception.message}`, true])
       }
-    } catch (exception) {
-      setMessage([`deleting the blog failed. Error message: ${exception.message}`, true])
     }
   }
   //console.log('main return')

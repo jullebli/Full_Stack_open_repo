@@ -46,7 +46,7 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  console.log('controller delete request.user', request.user)
+  //console.log('controller delete request.user', request.user)
   const user = request.user
   const blog = await Blog.findById(request.params.id)
 
@@ -59,7 +59,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     response.status(204).end()
   } else {
     response.status(401).json(
-      { error: 'user not authorized to delete this blog' })
+      { error: 'no authorization to delete this blog' })
   }
 
   /* another way:
