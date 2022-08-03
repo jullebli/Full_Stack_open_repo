@@ -112,6 +112,7 @@ const App = () => {
         </div>
         <h2>Your blogs:</h2>
         {blogs.filter(blog => blog.user.name === user.name)
+          .sort((a,b) => b.likes - a.likes)
           .map(blog =>
             <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
           )}
