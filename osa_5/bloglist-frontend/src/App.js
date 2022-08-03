@@ -101,6 +101,7 @@ const App = () => {
 
   const loggedInMode = () => {
     //console.log('loggedInMode')
+    //console.log('loggedInMode blogs', blogs)
     return (
       <div>
         <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
@@ -112,7 +113,7 @@ const App = () => {
         <h2>Your blogs:</h2>
         {blogs.filter(blog => blog.user.name === user.name)
           .map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
           )}
       </div>
     )
@@ -132,11 +133,37 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       const newBlogs = await blogService.getAll()
       setBlogs(newBlogs)
+      //setBlogs(blogs.concat(addedBlog)) this does not rerender
       if (addedBlog) {
         setMessage([`a new blog ${addedBlog.title} by ${addedBlog.author}`, false])
       }
     } catch (exception) {
       setMessage([`adding a blog failed. Error message: ${exception.message}`, true])
+    }
+  }
+
+  const updateBlog = async ({ blog }) => {
+    //console.log('App updateBlog blog', blog)
+    //console.log('App updateBlog blog.user.id', blog.user.id)
+    const blogObject = {
+      id: blog.id,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+    try {
+      const updatedBlog = await blogService.update(blogObject)
+      //console.log('updateBlog response', updatedBlog)
+      //setBlogs(blogs.concat(updatedBlog))
+      const newBlogs = await blogService.getAll()
+      setBlogs(newBlogs)
+      if (updatedBlog) {
+        setMessage([`you liked blog ${updatedBlog.title} by ${updatedBlog.author}`, false])
+      }
+    } catch (exception) {
+      setMessage([`updating a blog failed. Error message: ${exception.message}`, true])
     }
   }
   //console.log('main return')
@@ -149,16 +176,16 @@ const App = () => {
         timedNotification({ message })}
       <h2>blogs</h2>
       {user === null ?
-      <Togglable buttonLabel='login'>
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-      </Togglable>
-      : loggedInMode()}
+        <Togglable buttonLabel='login'>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        </Togglable>
+        : loggedInMode()}
     </div>
   )
 }

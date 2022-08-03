@@ -21,10 +21,19 @@ const create = async newObject => {
   return response.data
 }
 
+const update = async updatedBlog => {
+  //console.log('blogService update updatedBlog', updatedBlog)
+  //console.log('blogService ${baseUrl}/${updatedBlog.id}', `${baseUrl}/${updatedBlog.id}`)
+  const response = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog)
+  //console.log('blogService response', response)
+  return response.data
+}
+
 const blogService = {
   getAll,
   setToken,
-  create
+  create,
+  update
 }
 
 export default blogService

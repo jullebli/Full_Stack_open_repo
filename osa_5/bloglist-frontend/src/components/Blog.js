@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [showMore, setShowMore] = useState(false)
 
   const hideWhenShowMore = { display: showMore ? 'none' : '' }
@@ -25,7 +25,7 @@ const Blog = ({ blog }) => {
       <div style={showWhenShowMore}>
         {blog.url}
         <div>
-          likes {blog.likes} <button>like</button>
+          likes {blog.likes} <button onClick={() => updateBlog({blog})}>like</button>
         </div>
         {blog.user.name}
       </div>
