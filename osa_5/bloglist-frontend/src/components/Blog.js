@@ -21,22 +21,22 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button style={hideWhenShowMore}
-      onClick={toggleVisibility}>view</button>
+        onClick={toggleVisibility}>view</button>
       <button style={showWhenShowMore}
-      onClick={toggleVisibility}>hide</button>
+        onClick={toggleVisibility}>hide</button>
       <div style={showWhenShowMore}>
         {blog.url}
         <div>
           likes {blog.likes} <button style={{ background: 'yellow' }}
-          onClick={() => updateBlog({ blog })}>like</button>
+            onClick={() => updateBlog({ blog })}>like</button>
         </div>
         {blog.user.name}
         <div>
-        {loggedInUser.username === blog.user.username ?
-          <button style={{ color: 'white', background: 'blue' }}
-          onClick={() => deleteBlog({ blog })}>remove</button>
-          : null
-        }
+          {loggedInUser.username === blog.user.username ?
+            <button style={{ color: 'white', background: 'blue' }}
+              onClick={() => deleteBlog({ blog })}>remove</button>
+            : null
+          }
         </div>
       </div>
     </div>
