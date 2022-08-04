@@ -178,18 +178,20 @@ const App = () => {
         <p>{user.name} logged in <button type='submit'
           onClick={() => handleLogOut()} id='logOut'>logout</button></p>
         <div>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+          <Togglable buttonLabel='create new blog' ref={blogFormRef} id='createNewBlog'>
             <BlogForm createBlog={addBlog} />
           </Togglable>
         </div>
-        <h2>Your blogs:</h2>
-        {blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map(blog =>
-            <Blog key={blog.id} blog={blog}
-              updateBlog={updateBlog} deleteBlog={deleteBlog}
-              loggedInUser={user} />
-          )}
+        <div id='blogListing'>
+          <h2>All blogs:</h2>
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map(blog =>
+              <Blog key={blog.id} blog={blog}
+                updateBlog={updateBlog} deleteBlog={deleteBlog}
+                loggedInUser={user} />
+            )}
+        </div>
       </div>
     )
   }

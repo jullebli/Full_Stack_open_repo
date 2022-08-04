@@ -16,10 +16,11 @@ const Togglable = forwardRef((props, ref) => {
     }
   })
   //console.log(`togglable ${props.buttonLabel} visible`, visible)
+  const uniqueId = props.buttonLabel.trim(' ')
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <button onClick={toggleVisibility} id={uniqueId}>{props.buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>
         {props.children}

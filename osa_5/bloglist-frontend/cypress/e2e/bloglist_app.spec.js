@@ -13,6 +13,7 @@ describe('Blog app', function () {
   })
 
   describe('Login', function () {
+
     beforeEach(function () {
       const testUser = {
         name: 'Test user',
@@ -39,6 +40,29 @@ describe('Blog app', function () {
       cy.get('.error').should('contain', 'wrong username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
         .and('have.css', 'border-style', 'solid')
+    })
+    describe('When logged in', function () {
+      beforeEach(function () {
+        cy.request('POST', 'http://localhost:3003/api/login', {
+          username: 'testuser', password: 'citron'
+        }).then(response => {
+          localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
+          cy.visit('http://localhost:3000')
+        })
+      })
+
+      it('A blog can be created', function () {
+        cy.contains('blogs')
+        cy.contains('create new blog').click()
+        cy.get('#title').type('First added blog')
+        cy.get('#author').type('Adam')
+        cy.get('#url').type('www.paradise.nert')
+        cy.get('#create').click()
+
+        cy.get('#blogListing').should('contain', 'First added blog')
+          .and('contain', 'Adam')
+
+      })
     })
   })
 })
