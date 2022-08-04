@@ -24,9 +24,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
         onClick={toggleVisibility}>view</button>
       <button style={showWhenShowMore}
         onClick={toggleVisibility}>hide</button>
-      <div style={showWhenShowMore}>
+      <div style={showWhenShowMore} data-testid='showMoreBlogInfo'>
         {blog.url}
-        <div>
+        <div data-testid='likesLine'>
           likes {blog.likes} <button style={{ background: 'yellow' }}
             onClick={() => updateBlog({ blog })}>like</button>
         </div>
