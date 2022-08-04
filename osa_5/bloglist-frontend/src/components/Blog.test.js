@@ -9,7 +9,6 @@ describe('Blog component', () => {
   let testBlog
   let updateBlog
   let deleteBlog
-  let container
 
   beforeEach(() => {
     testUser = {
@@ -29,14 +28,11 @@ describe('Blog component', () => {
     updateBlog = jest.fn()
     deleteBlog = jest.fn()
 
-    container = render(<Blog blog={testBlog} updateBlog={updateBlog}
+    render(<Blog blog={testBlog} updateBlog={updateBlog}
       deleteBlog={deleteBlog} loggedInUser={testUser} />)
   })
 
   test('displays only title and author at start', () => {
-
-    //render(<Blog blog={testBlog} updateBlog={updateBlog}
-    //  deleteBlog={deleteBlog} loggedInUser={testUser} />)
 
     const titleText = screen.getByText(testBlog.title, { exact: false })
     const authorText = screen.getByText(testBlog.author, { exact: false })
@@ -54,8 +50,6 @@ describe('Blog component', () => {
 
   })
 
-  //Tee testi, joka varmistaa että myös url ja likejen määrä 
-  //näytetään kun blogin kaikki tiedot näyttävää nappia on painettu.
   test('displays also url and likes after clicking view button', async () => {
 
     const moreInfoDiv = screen.getByTestId('showMoreBlogInfo')
