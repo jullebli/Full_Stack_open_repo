@@ -1,3 +1,4 @@
 node_modules
 build
-.eslintrc.json
+.eslintrc.js
+cypress.config.js

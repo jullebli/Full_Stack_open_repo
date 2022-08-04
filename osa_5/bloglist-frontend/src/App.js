@@ -17,7 +17,7 @@ const App = () => {
   //const [loginVisible, setLoginVisible] = useState(false)
   const blogFormRef = useRef()
   //const loginFormRef = useRef()
- //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+  //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
     //console.log('useEffect 1')
@@ -197,7 +197,7 @@ const App = () => {
         timedNotification({ message })}
       <h2>blogs</h2>
       {user === null ?
-        <Togglable buttonLabel='login'>
+        <Togglable buttonLabel='login' id='openLogInForm'>
           <LoginForm
             username={username}
             password={password}
