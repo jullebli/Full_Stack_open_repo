@@ -16,7 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   //const [loginVisible, setLoginVisible] = useState(false)
   const blogFormRef = useRef()
-  //const loginFormRef = useRef()
+  const loginFormRef = useRef()
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
@@ -35,9 +35,10 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      //setLoginVisible(false)
+    } else {
+      loginFormRef.current.toggleVisibility()
     }
-  }, [])
+  }, [], [user])
 
   const timedNotification = ({ message }) => {
     //console.log('timedNotification')
@@ -74,6 +75,7 @@ const App = () => {
         window.localStorage.setItem(
           'loggedBloglistUser', JSON.stringify(user)
         )
+        loginFormRef.current.toggleVisibility()
         blogService.setToken(user.token)
         setUser(user)
         setUsername('')
@@ -96,6 +98,7 @@ const App = () => {
     setUsername('')
     setPassword('')
     setMessage(['logout successfull', false])
+    loginFormRef.current.toggleVisibility()
   }
 
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
@@ -172,7 +175,8 @@ const App = () => {
     //console.log('loggedInMode blogs', blogs)
     return (
       <div>
-        <p>{user.name} logged in <button type='submit' onClick={() => handleLogOut()}>logout</button></p>
+        <p>{user.name} logged in <button type='submit'
+          onClick={() => handleLogOut()} id='logOut'>logout</button></p>
         <div>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
@@ -197,7 +201,7 @@ const App = () => {
         timedNotification({ message })}
       <h2>blogs</h2>
       {user === null ?
-        <Togglable buttonLabel='login' id='openLogInForm'>
+        <Togglable buttonLabel='login' ref={loginFormRef} id='openLogInForm'>
           <LoginForm
             username={username}
             password={password}
