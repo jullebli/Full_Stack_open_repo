@@ -58,7 +58,6 @@ describe('Blog component', () => {
   //näytetään kun blogin kaikki tiedot näyttävää nappia on painettu.
   test('displays also url and likes after clicking view button', async () => {
 
-    
     const moreInfoDiv = screen.getByTestId('showMoreBlogInfo')
     //moreInfoDiv contains likeLine, url, user.name and delete button
     expect(moreInfoDiv).toHaveStyle('display: none')
@@ -80,5 +79,18 @@ describe('Blog component', () => {
     expect(urlText).toBeDefined()
     expect(likesLine).toBeDefined()
 
+  })
+
+  test('when correct functions are called when like button clicked twice', async () => {
+
+    const user = userEvent.setup()
+    const viewButton = screen.getByTestId('viewButton')
+    await user.click(viewButton)
+
+    const likeButton = screen.getByTestId('likeButton')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(updateBlog.mock.calls).toHaveLength(2)
   })
 })
