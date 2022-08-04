@@ -53,3 +53,6 @@ module.exports = {
     }
   }
 }
+
+//extends "plugin:testing-library/react" //own addition
+//plugins 'testing-library' //own addition

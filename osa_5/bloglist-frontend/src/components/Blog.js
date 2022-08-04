@@ -21,14 +21,14 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button style={hideWhenShowMore}
-        onClick={toggleVisibility}>view</button>
+        onClick={toggleVisibility} data-testid='viewButton'>view</button>
       <button style={showWhenShowMore}
         onClick={toggleVisibility}>hide</button>
       <div style={showWhenShowMore} data-testid='showMoreBlogInfo'>
         {blog.url}
         <div data-testid='likesLine'>
           likes {blog.likes} <button style={{ background: 'yellow' }}
-            onClick={() => updateBlog({ blog })}>like</button>
+            onClick={() => updateBlog({ blog })} data-testid='likeButton'>like</button>
         </div>
         {blog.user.name}
         <div>
