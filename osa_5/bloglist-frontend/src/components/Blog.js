@@ -19,9 +19,9 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author} <button style={hideWhenShowMore}
-        onClick={toggleVisibility} data-testid='viewButton' id='view'>view</button>
+        onClick={toggleVisibility} data-testid='viewButton' id='viewButton'>view</button>
       <button style={showWhenShowMore}
         onClick={toggleVisibility} id='hide'>hide</button>
       <div style={showWhenShowMore} data-testid='showMoreBlogInfo'>
@@ -30,11 +30,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
           likes {blog.likes} <button style={{ background: 'yellow' }}
             onClick={() => updateBlog({ blog })} data-testid='likeButton' id='likeButton'>like</button>
         </div>
-        {blog.user.name}
+        <div id='usernameLine'>
+          {blog.user.name}
+        </div>
         <div>
           {loggedInUser.username === blog.user.username ?
             <button style={{ color: 'white', background: 'blue' }}
-              onClick={() => deleteBlog({ blog })}>remove</button>
+              onClick={() => deleteBlog({ blog })} id='remove'>remove</button>
             : null
           }
         </div>

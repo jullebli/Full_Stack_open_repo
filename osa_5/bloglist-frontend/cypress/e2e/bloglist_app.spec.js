@@ -66,7 +66,7 @@ describe('Blog app', function () {
       cy.contains('create new blog').click()
       cy.get('#title').type('First added blog')
       cy.get('#author').type('Adam')
-      cy.get('#url').type('www.paradise.nert')
+      cy.get('#url').type('www.paradise.net')
       cy.get('#create').click()
 
       cy.get('#blogListing').should('contain', 'First added blog')
@@ -85,18 +85,73 @@ describe('Blog app', function () {
       it('A blog can be liked (two times)', function () {
         cy.contains('Initially added blog')
           .and('contain', 'Cypress tester')
-        cy.get('#view').click()
+        cy.get('#viewButton').click()
         cy.contains('Initially added blog')
           .and('contain', 'Cypress tester')
           .and('contain', 'likes 0')
         cy.contains('Initially added blog').get('#likeButton').click()
         //click hide and view so that cypress manages to push same button twice
         cy.contains('Initially added blog').get('#hide').click()
-        cy.contains('Initially added blog').get('#view').click()
+        cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog').get('#likeButton').click()
 
         cy.contains('Initially added blog').get('#likesLine').contains('likes 2')
+      })
 
+      it('own added blog can be deleted', function () {
+        cy.contains('create new blog').click()
+        cy.get('#title').type('Only to be removed blog')
+        cy.get('#author').type('Removable')
+        cy.get('#url').type('www.remove.com')
+        cy.get('#create').click()
+
+        cy.get('#blogListing').should('contain', 'Only to be removed blog')
+          .and('contain', 'Removable')
+
+        cy.get('.blog')
+          .eq(1)
+          .should('contain', 'Only to be removed blog Removable')
+          .contains('button', 'view')
+          .click()
+
+        cy.get('.blog')
+          .eq(1)
+          .contains('button', 'remove')
+          .click()
+
+        cy.get('.success').should('contain', 'you deleted blog Only to be removed blog by Removable')
+        cy.get('#blogListing')
+          .should('not.contain', 'Only to be removed')
+          .and('not.contain', 'Removable')
+      })
+
+      it('remove button is not visible for user who did not add the blog', function () {
+        cy.get('#logOut').click()
+
+        const newUserWithoutBlogs = {
+          name: 'Blogless user',
+          username: 'blogless',
+          password: 'cherry'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users', newUserWithoutBlogs)
+
+        cy.request('POST', 'http://localhost:3003/api/login', {
+          username: 'blogless', password: 'cherry'
+        }).then(response => {
+          localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
+          cy.visit('http://localhost:3000')
+        })
+
+        cy.get('.blog')
+          .contains('Initially added blog')
+          .contains('button', 'view')
+          .click()
+
+        cy.get('.blog')
+          .should('contain', 'Test user')
+          .and('not.contain', 'remove')
+
+        cy.get('#blogListing').should('not.contain', 'remove')
       })
     })
   })
