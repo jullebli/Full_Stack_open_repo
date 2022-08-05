@@ -73,6 +73,84 @@ describe('Blog app', function () {
         .and('contain', 'Adam')
 
     })
+
+    it('And three blogs added, blogs will be sorted by likes', function () {
+      cy.createBlog({
+        title: 'This will have least likes',
+        author: 'Unlikeable',
+        url: 'www.unlikeable.com'
+      })
+
+      cy.createBlog({
+        title: 'Second most liked blog',
+        author: 'Traveler',
+        url: 'www.second.com'
+      })
+
+      cy.createBlog({
+        title: 'Most liked blog',
+        author: 'Beloved',
+        url: 'www.liked.com'
+      })
+
+      cy.get('.blog')
+        .eq(0)
+        .should('contain', 'This will have least likes')
+        .contains('button', 'view')
+        .click()
+
+      cy.get('.blog')
+        .eq(1)
+        .should('contain', 'Second most liked blog')
+        .contains('button', 'view')
+        .click()
+
+      cy.get('.blog')
+        .eq(2)
+        .should('contain', 'Most liked blog')
+        .contains('button', 'view')
+        .click()
+
+      //clicking likes for blogs to be sorted differently
+      cy.get('.blog')
+        .eq(2)
+        .contains('button', 'like')
+        .click()
+
+      cy.wait(500)
+
+      cy.get('.blog')
+        .eq(0)
+        .contains('button', 'like')
+        .click()
+
+      cy.wait(500)
+
+      cy.get('.blog')
+        .eq(2)
+        .contains('button', 'like')
+        .click()
+
+      cy.wait(500)
+
+      //checking that the order has changed accordingly
+      cy.get('.blog')
+        .eq(0)
+        .should('contain', 'Most liked blog')
+        .contains('likes 2')
+
+      cy.get('.blog')
+        .eq(1)
+        .should('contain', 'Second most liked blog')
+        .contains('likes 1')
+
+      cy.get('.blog')
+        .eq(2)
+        .should('contain', 'This will have least likes')
+        .contains('likes 0')
+
+    })
+
     describe('And one blog added', function () {
       beforeEach(function () {
         cy.createBlog({
