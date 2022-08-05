@@ -10,21 +10,11 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  //const body = request.body
   const user = request.user
 
   if (!user) {
-    response.status(401).end()
+    response.status(401).json({ error: 'only logged in users can add blogs' })
   } else {
-    /*
-    const blog = new Blog({
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      //likes: body.likes,
-      user: user._id
-    }) */
-    //another way: const blog = new Blog({ ...request.body, user: user.id })
     const blog = new Blog({ ...request.body, user: user.id })
 
     const savedBlog = await blog.save()

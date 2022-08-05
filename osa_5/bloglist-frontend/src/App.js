@@ -38,7 +38,7 @@ const App = () => {
     } else {
       loginFormRef.current.toggleVisibility()
     }
-  }, [], [user])
+  }, [])
 
   const timedNotification = ({ message }) => {
     //console.log('timedNotification')
@@ -98,7 +98,7 @@ const App = () => {
     setUsername('')
     setPassword('')
     setMessage(['logout successfull', false])
-    loginFormRef.current.toggleVisibility()
+    //loginFormRef.current.toggleVisibility()
   }
 
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
@@ -150,7 +150,6 @@ const App = () => {
   }
 
   const deleteBlog = async ({ blog }) => {
-
     //console.log('deleteBlog blog', blog)
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {

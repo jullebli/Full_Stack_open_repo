@@ -23,12 +23,12 @@ const Blog = ({ blog, updateBlog, deleteBlog, loggedInUser }) => {
       {blog.title} {blog.author} <button style={hideWhenShowMore}
         onClick={toggleVisibility} data-testid='viewButton' id='view'>view</button>
       <button style={showWhenShowMore}
-        onClick={toggleVisibility}>hide</button>
+        onClick={toggleVisibility} id='hide'>hide</button>
       <div style={showWhenShowMore} data-testid='showMoreBlogInfo'>
         {blog.url}
-        <div data-testid='likesLine'>
+        <div data-testid='likesLine' id='likesLine'>
           likes {blog.likes} <button style={{ background: 'yellow' }}
-            onClick={() => updateBlog({ blog })} data-testid='likeButton'>like</button>
+            onClick={() => updateBlog({ blog })} data-testid='likeButton' id='likeButton'>like</button>
         </div>
         {blog.user.name}
         <div>
