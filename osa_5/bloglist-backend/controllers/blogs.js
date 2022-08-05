@@ -36,7 +36,6 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  //console.log('controller delete request.user', request.user)
   const user = request.user
   const blog = await Blog.findById(request.params.id)
 
@@ -66,20 +65,8 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  //console.log('controller put, request.body', request.body)
-  //console.log('controller put request-params.id', request.params.id)
-  /*
-  const blog =
-  {
-    title: request.body.title,
-    author: request.body.author,
-    url: request.body.url,
-    likes: request.body.likes,
-    //user: request.body.user
-  }
-  //another way: const blog = request.body */
+
   const blog = request.body
-  //console.log('controller put blog', blog)
 
   const updatedBlog = await Blog
     .findByIdAndUpdate(

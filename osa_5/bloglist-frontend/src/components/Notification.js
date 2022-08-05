@@ -9,7 +9,7 @@ const Notification = ({ message, error }) => {
     padding: '10px'
   }
 
-  //console.log('Notification, message, error', message, error)
+
   if (message === null) {
     return null
   }

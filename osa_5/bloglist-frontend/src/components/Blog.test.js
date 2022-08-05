@@ -62,7 +62,7 @@ describe('Blog component', () => {
 
     const titleText = screen.getByText(testBlog.title, { exact: false })
     const authorText = screen.getByText(testBlog.author, { exact: false })
-    
+
     const urlText = screen.getByText(testBlog.url, { exact: false })
     const likesLine = screen.getByTestId('likesLine')
     //likesLine is a div containing likes: 5 and like button

@@ -22,10 +22,7 @@ const create = async newObject => {
 }
 
 const update = async updatedBlog => {
-  //console.log('blogService update updatedBlog', updatedBlog)
-  //console.log('blogService ${baseUrl}/${updatedBlog.id}', `${baseUrl}/${updatedBlog.id}`)
   const response = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog)
-  //console.log('blogService response', response)
   return response.data
 }
 
@@ -33,7 +30,6 @@ const deleteBlog = async (toBeDeletedBlog) => {
   const config = {
     headers: { Authorization: token }
   }
-  //console.log('blogService delete ${baseUrl}/${toBeDeletedBlog.id}, toBeDeletedBlog, config', `${baseUrl}/${toBeDeletedBlog.id}`, toBeDeletedBlog, config)
   const response = await axios.delete(`${baseUrl}/${toBeDeletedBlog.id}`, config )
   return response.data
 }

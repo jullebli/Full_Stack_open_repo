@@ -15,7 +15,7 @@ const Togglable = forwardRef((props, ref) => {
       toggleVisibility
     }
   })
-  //console.log(`togglable ${props.buttonLabel} visible`, visible)
+
   const uniqueId = props.buttonLabel.trim(' ')
   return (
     <div>

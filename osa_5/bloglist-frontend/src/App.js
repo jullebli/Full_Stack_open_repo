@@ -20,7 +20,6 @@ const App = () => {
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
-    //console.log('useEffect 1')
     blogService
       .getAll()
       .then(initialBlogs =>
@@ -29,7 +28,6 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    //console.log('useEffect 2')
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -41,9 +39,6 @@ const App = () => {
   }, [])
 
   const timedNotification = ({ message }) => {
-    //console.log('timedNotification')
-    //console.log('timedNotification message[0]', message[0])
-    //console.log('timedNotification message[1]', message[1])
 
     if (!message) {
       return null
@@ -64,14 +59,10 @@ const App = () => {
     if (!username || !password) {
       setMessage(['username or password missing', true])
     } else {
-      //console.log('handleLogin')
-      //console.log('loggin in with', username, password)
-
       try {
         const user = await loginService.login({
           username, password
         })
-        //console.log('handleLogin user', user)
         window.localStorage.setItem(
           'loggedBloglistUser', JSON.stringify(user)
         )
@@ -81,7 +72,6 @@ const App = () => {
         setUsername('')
         setPassword('')
         setMessage(['login successful', false])
-        //setLoginVisible(false)
       } catch (exception) {
         setMessage(['wrong username or password', true])
       }
@@ -89,9 +79,6 @@ const App = () => {
   }
 
   const handleLogOut = () => {
-    //console.log('handleLogOut')
-    //console.log('logging out ', username, password)
-
     window.localStorage.removeItem('loggedBloglistUser')
     blogService.setToken('')
     setUser(null)
@@ -102,7 +89,6 @@ const App = () => {
   }
 
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
-    //console.log('addBlog')
     const blogObject = {
       title: newTitle,
       author: newAuthor,
@@ -125,8 +111,6 @@ const App = () => {
   }
 
   const updateBlog = async ({ blog }) => {
-    //console.log('App updateBlog blog', blog)
-    //console.log('App updateBlog blog.user.id', blog.user.id)
     const blogObject = {
       id: blog.id,
       title: blog.title,
@@ -137,8 +121,6 @@ const App = () => {
     }
     try {
       const updatedBlog = await blogService.update(blogObject)
-      //console.log('updateBlog response', updatedBlog)
-      //setBlogs(blogs.concat(updatedBlog))
       if (updatedBlog) {
         setMessage([`you liked blog ${updatedBlog.title} by ${updatedBlog.author}`, false])
         const newBlogs = await blogService.getAll()
@@ -150,11 +132,9 @@ const App = () => {
   }
 
   const deleteBlog = async ({ blog }) => {
-    //console.log('deleteBlog blog', blog)
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
         const deletedBlog = await blogService.deleteBlog(blog)
-        //console.log('deleteBlog() deletedBlog', deletedBlog)
         if (!deletedBlog) {
           setMessage([`you deleted blog ${blog.title} by ${blog.author}`, false])
           const newBlogs = await blogService.getAll()
@@ -165,13 +145,8 @@ const App = () => {
       }
     }
   }
-  //console.log('main return')
-  //console.log('message[0] before main return', message[0])
-  //console.log('message[1] before main return', message[1])
 
   const loggedInMode = () => {
-    //console.log('loggedInMode')
-    //console.log('loggedInMode blogs', blogs)
     return (
       <div>
         <p>{user.name} logged in <button type='submit'
