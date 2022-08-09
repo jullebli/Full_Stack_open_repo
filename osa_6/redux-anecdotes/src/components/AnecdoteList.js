@@ -4,7 +4,9 @@ import { createNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state.anecdotes)
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
+    return anecdotes.filter(anecdote => anecdote.content.includes(filter))
+  })
 
   const vote = (anecdote) => {
     dispatch(voteAnecdote(anecdote.id))
@@ -20,8 +22,8 @@ const AnecdoteList = () => {
               {anecdote.content}
             </div>
             <div>
-              has {anecdote.votes}
-              <button onClick={() => vote(anecdote)}>vote</button>
+              has {anecdote.votes} <button
+                onClick={() => vote(anecdote)}>vote</button>
             </div>
           </div>
         )}

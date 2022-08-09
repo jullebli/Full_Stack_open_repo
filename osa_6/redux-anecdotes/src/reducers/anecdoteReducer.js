@@ -21,7 +21,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-//state.push is acceptable because the use of Immer library
+//state.push is acceptable because of the use of Immer library
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState,
