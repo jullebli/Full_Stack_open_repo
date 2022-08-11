@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const getId = () => (100000 * Math.random()).toFixed(0)
-
 //state.push is acceptable because of the use of Immer library
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
@@ -19,15 +17,6 @@ const anecdoteSlice = createSlice({
       )
     },
     createAnecdote(state, action) {
-      const content = action.payload
-      const newAnecdote = {
-        content,
-        id: getId(),
-        votes: 0
-      }
-      return [...state, newAnecdote]
-    },
-    appendAnecdote(state, action) {
       state.push(action.payload)
     },
     setAnecdotes(state, action) {
@@ -36,5 +25,5 @@ const anecdoteSlice = createSlice({
   }
 })
 
-export const { createAnecdote, voteAnecdote, appendAnecdote, setAnecdotes } = anecdoteSlice.actions
+export const { createAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
