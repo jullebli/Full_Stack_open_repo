@@ -16,14 +16,14 @@ const notificationSlice = createSlice({
 })
 
 //in order to clear timer when new notification is set
-let timerIsSet
+let timeoutID
 export const setNotification = (content, timeInSeconds) => {
   return async dispatch => {
     dispatch(createNotification(content))
-    if (timerIsSet) {
-      clearTimeout(timerIsSet)
+    if (timeoutID) {
+      clearTimeout(timeoutID)
     }
-    timerIsSet = setTimeout(() => {
+    timeoutID = setTimeout(() => {
       dispatch(clearToInitial())
     }, timeInSeconds * 1000)
   }
