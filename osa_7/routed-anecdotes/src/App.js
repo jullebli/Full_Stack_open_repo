@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useField } from './hooks'
+import { useMatch } from 'react-router-dom'
 import {
-  BrowserRouter as Router,
   Routes, Route, Link,
-  useParams,
   useNavigate
 } from 'react-router-dom'
 
@@ -55,18 +55,17 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
   const navigate = useNavigate()
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     navigate('/')
@@ -78,15 +77,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+          <input {...info} />
         </div>
         <button>create</button>
       </form>
@@ -94,9 +93,7 @@ const CreateNew = (props) => {
   )
 }
 
-const Anecdote = ({ anecdotes }) => {
-  const id = useParams().id
-  const anecdote = anecdotes.find(a => a.id === Number(id))
+const Anecdote = ({ anecdote }) => {
   return (
     <div>
       <h2>{anecdote.content}</h2>
@@ -123,7 +120,10 @@ const App = () => {
       id: 2
     }
   ])
-
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdotes.find(a => a.id === Number(match.params.id))
+    : null
   const [notification, setNotification] = useState('')
   let timeOutID //to clear the timeout of previous notification
 
@@ -154,22 +154,20 @@ const App = () => {
   }
 
   return (
-    <Router>
+    <div>
+      <h1>Software anecdotes</h1>
+      <Menu />
+      {notification}
+      <Routes>
+        <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+      </Routes>
       <div>
-        <h1>Software anecdotes</h1>
-        <Menu />
-        {notification}
-        <Routes>
-          <Route path='/anecdotes/:id' element={<Anecdote anecdotes={anecdotes} />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/create' element={<CreateNew addNew={addNew} />} />
-          <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
-        </Routes>
-        <div>
-          <Footer />
-        </div>
+        <Footer />
       </div>
-    </Router>
+    </div>
   )
 }
 
