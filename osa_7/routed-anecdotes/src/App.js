@@ -130,10 +130,12 @@ const App = () => {
       id: 2
     }
   ])
+
   const match = useMatch('/anecdotes/:id')
   const anecdote = match
     ? anecdotes.find(a => a.id === Number(match.params.id))
     : null
+
   const [notification, setNotification] = useState('')
   let timeOutID //to clear the timeout of previous notification
 
