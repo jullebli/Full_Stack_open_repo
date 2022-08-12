@@ -7,6 +7,14 @@
     {
       "content": "the best featrure ever <3",
       "id": 2
+    },
+    {
+      "content": "I was able to create a note",
+      "id": 3
+    },
+    {
+      "content": "And add a person",
+      "id": 4
     }
   ],
   "persons": [
@@ -19,6 +27,11 @@
       "name": "kaltsoon",
       "number": "045-2323456",
       "id": 2
+    },
+    {
+      "name": "Julia",
+      "number": "040-678910",
+      "id": 3
     }
   ]
 }
