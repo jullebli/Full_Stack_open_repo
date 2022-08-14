@@ -26,12 +26,10 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
-  const blogAmountByAuthor =
-    blogs
-      .reduce((authors, blog) => {
-        authors[blog.author] = authors[blog.author] + 1 || 1
-        return authors
-      }, {})
+  const blogAmountByAuthor = blogs.reduce((authors, blog) => {
+    authors[blog.author] = authors[blog.author] + 1 || 1
+    return authors
+  }, {})
 
   let mostBlogs = null
   let authorOfMostBlogs = null
@@ -42,20 +40,20 @@ const mostBlogs = (blogs) => {
     }
   }
 
-  const result = authorOfMostBlogs === null
-    ? undefined : { author: authorOfMostBlogs, blogs: mostBlogs }
+  const result =
+    authorOfMostBlogs === null
+      ? undefined
+      : { author: authorOfMostBlogs, blogs: mostBlogs }
 
   return result
   //another way: similar to mostLikes another way
 }
 
 const mostLikes = (blogs) => {
-  const likeAmountByAuthor =
-    blogs
-      .reduce((authors, blog) => {
-        authors[blog.author] = authors[blog.author] + blog.likes || blog.likes
-        return authors
-      }, {})
+  const likeAmountByAuthor = blogs.reduce((authors, blog) => {
+    authors[blog.author] = authors[blog.author] + blog.likes || blog.likes
+    return authors
+  }, {})
 
   let mostLikes = null
   let authorOfMostLikes = null
@@ -66,8 +64,10 @@ const mostLikes = (blogs) => {
     }
   }
 
-  const result = authorOfMostLikes === null
-    ? undefined : { author: authorOfMostLikes, likes: mostLikes }
+  const result =
+    authorOfMostLikes === null
+      ? undefined
+      : { author: authorOfMostLikes, likes: mostLikes }
 
   return result
   /* another way:
@@ -90,5 +90,5 @@ module.exports = {
   totalLikes,
   favoriteBlog,
   mostBlogs,
-  mostLikes
+  mostLikes,
 }

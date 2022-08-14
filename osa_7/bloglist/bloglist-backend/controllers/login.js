@@ -7,16 +7,14 @@ loginRouter.post('/', async (request, response) => {
   const { username, password } = request.body
 
   const user = await User.findOne({ username })
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.passwordHash)
+  const passwordCorrect =
+    user === null ? false : await bcrypt.compare(password, user.passwordHash)
 
   if (!(user && passwordCorrect)) {
     return response.status(401).json({
-      error: 'invalid username or password'
+      error: 'invalid username or password',
     })
   } else {
-
     const userForToken = {
       username: user.username,
       id: user._id,
@@ -24,7 +22,7 @@ loginRouter.post('/', async (request, response) => {
 
     const token = jwt.sign(
       userForToken,
-      process.env.SECRET,
+      process.env.SECRET
       //{ expiresIn: 60 * 60 } causes problems in part 5, solution in part 13
     ) // 60 * 60 means one hour
 

@@ -37,9 +37,7 @@ describe('(Even) without authorization token', () => {
     const blogsAtBeginning = await helper.blogsInDb()
     const someBlog = await Blog.findOne({})
 
-    await api
-      .delete(`/api/blogs/${someBlog.id}`)
-      .expect(401)
+    await api.delete(`/api/blogs/${someBlog.id}`).expect(401)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtBeginning.length)
@@ -55,22 +53,17 @@ describe('Given correct authorization token', () => {
     const testUser = {
       username: 'testerizer',
       name: 'Test user',
-      password: 'password'
+      password: 'password',
     }
 
-    await api
-      .post('/api/users')
-      .send(testUser)
+    await api.post('/api/users').send(testUser)
 
-    const result = await api
-      .post('/api/login')
-      .send(testUser)
+    const result = await api.post('/api/login').send(testUser)
 
     authorization = `bearer ${result.body.token}`
   })
 
   test('a valid blog can be added', async () => {
-
     const blogsAtBeginning = await helper.blogsInDb()
 
     const newBlog = {
@@ -87,7 +80,7 @@ describe('Given correct authorization token', () => {
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    const titles = response.body.map(x => x.title)
+    const titles = response.body.map((x) => x.title)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtBeginning.length + 1)
@@ -126,8 +119,8 @@ describe('Given correct authorization token', () => {
       .expect(400)
 
     const response = await api.get('/api/blogs')
-    const authors = response.body.map(x => x.author)
-    const urls = response.body.map(x => x.url)
+    const authors = response.body.map((x) => x.author)
+    const urls = response.body.map((x) => x.url)
 
     expect(authors).not.toContain('Mysterious coders')
     expect(urls).not.toContain('www.notarealaddress.com')
@@ -136,7 +129,7 @@ describe('Given correct authorization token', () => {
   test('blog without url and title will not be added', async () => {
     const newBlog = {
       author: 'Mysterious coders',
-      likes: 5
+      likes: 5,
     }
 
     await api
@@ -146,13 +139,12 @@ describe('Given correct authorization token', () => {
       .expect(400)
 
     const response = await api.get('/api/blogs')
-    const authors = response.body.map(x => x.author)
+    const authors = response.body.map((x) => x.author)
 
     expect(authors).not.toContain('Mysterious coders')
   })
 
   test('valid id will delete blog from database', async () => {
-
     const newBlog = {
       title: 'Java for dummies',
       author: 'Mysterious Javas',
@@ -176,8 +168,8 @@ describe('Given correct authorization token', () => {
       .expect(204)
 
     const response = await api.get('/api/blogs')
-    const titles = response.body.map(x => x.title)
-    const ids = response.body.map(x => x.id)
+    const titles = response.body.map((x) => x.title)
+    const ids = response.body.map((x) => x.id)
 
     const blogsAfterDeleting = await helper.blogsInDb()
     expect(blogsAfterDeleting).toHaveLength(blogsBeforeDeleting.length - 1)
@@ -205,13 +197,10 @@ describe('Given correct authorization token', () => {
       title: 'Updated title',
       author: 'Updated author',
       url: 'Updated url',
-      likes: blog.likes + 5
+      likes: blog.likes + 5,
     }
 
-    await api
-      .put(`/api/blogs/${toBeUpdatedId}`)
-      .send(updatedBlog)
-      .expect(200)
+    await api.put(`/api/blogs/${toBeUpdatedId}`).send(updatedBlog).expect(200)
 
     const response = await api.get(`/api/blogs/${toBeUpdatedId}`)
     const id = response.body.id
@@ -234,13 +223,10 @@ describe('Given correct authorization token', () => {
       title: 'Updated title',
       author: 'Updated author',
       url: 'Updated url',
-      likes: 5000
+      likes: 5000,
     }
 
-    await api
-      .put('/api/blogs/invalidId')
-      .send(blog)
-      .expect(400)
+    await api.put('/api/blogs/invalidId').send(blog).expect(400)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd.length).toEqual(blogsAtBeginning.length)
@@ -249,7 +235,7 @@ describe('Given correct authorization token', () => {
     expect(blogsAtEnd).not.toContain('Updated url')
 
     const response = await api.get('/api/blogs')
-    const likes = response.body.map(x => x.likes)
+    const likes = response.body.map((x) => x.likes)
     expect(likes).not.toContain(5000)
   })
 })
@@ -259,7 +245,10 @@ describe('When there is initially one user at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'initialTestUser', passwordHash: passwordHash })
+    const user = new User({
+      username: 'initialTestUser',
+      passwordHash: passwordHash,
+    })
 
     await user.save()
   })
@@ -270,7 +259,7 @@ describe('When there is initially one user at db', () => {
     const newUser = {
       username: 'roller',
       name: 'Rolle Järvinen',
-      password: 'joku helppo'
+      password: 'joku helppo',
     }
 
     await api
@@ -282,7 +271,7 @@ describe('When there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map((u) => u.username)
     expect(usernames).toContain(newUser.username)
   })
 
@@ -290,7 +279,7 @@ describe('When there is initially one user at db', () => {
     const userWithTakenUsername = {
       username: 'initialTestUser',
       name: 'Ronja Virtanen',
-      password: 'password'
+      password: 'password',
     }
 
     const result = await api
@@ -299,9 +288,11 @@ describe('When there is initially one user at db', () => {
       .expect(400)
 
     const response = await api.get('/api/users')
-    const names = response.body.map(u => u.name)
+    const names = response.body.map((u) => u.name)
 
-    expect(result.body.error).toContain('Error, expected `username` to be unique')
+    expect(result.body.error).toContain(
+      'Error, expected `username` to be unique'
+    )
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Ronja Virtanen')
@@ -311,18 +302,17 @@ describe('When there is initially one user at db', () => {
     const newUser = {
       username: 'Bo',
       name: 'Bo Henriksson',
-      password: 'hemlighet'
+      password: 'hemlighet',
     }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    const result = await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
-    const names = response.body.map(u => u.name)
+    const names = response.body.map((u) => u.name)
 
-    expect(result.body.error).toContain('is shorter than the minimum allowed length (3)')
+    expect(result.body.error).toContain(
+      'is shorter than the minimum allowed length (3)'
+    )
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Bo Henriksson')
@@ -331,18 +321,17 @@ describe('When there is initially one user at db', () => {
   test('user without username cannot be created', async () => {
     const newUser = {
       name: 'Silvia Larsson',
-      password: 'hemlig'
+      password: 'hemlig',
     }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    const result = await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
-    const names = response.body.map(u => u.name)
+    const names = response.body.map((u) => u.name)
 
-    expect(result.body.error).toContain('User validation failed: username: Path `username` is required')
+    expect(result.body.error).toContain(
+      'User validation failed: username: Path `username` is required'
+    )
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Silvia Larsson')
@@ -351,16 +340,13 @@ describe('When there is initially one user at db', () => {
   test('user without password cannot be created', async () => {
     const newUser = {
       username: 'lars85',
-      name: 'Sven Larsson'
+      name: 'Sven Larsson',
     }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    const result = await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
-    const names = response.body.map(u => u.name)
+    const names = response.body.map((u) => u.name)
 
     expect(result.body.error).toContain('password is required')
 
@@ -372,18 +358,17 @@ describe('When there is initially one user at db', () => {
     const newUser = {
       username: 'failing',
       name: 'Silja Kallio',
-      password: 'no'
+      password: 'no',
     }
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    const result = await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
-    const names = response.body.map(u => u.name)
+    const names = response.body.map((u) => u.name)
 
-    expect(result.body.error).toContain('password must be at least 3 characters long')
+    expect(result.body.error).toContain(
+      'password must be at least 3 characters long'
+    )
 
     expect(response.body).toHaveLength(1)
     expect(names).not.toContain('Silja Kallio')
@@ -407,18 +392,29 @@ describe('When there are initially three users at db', () => {
     const passwordForUser3 = 'some secret'
 
     const passwordHashForUser = await bcrypt.hash(passwordForUser, 10)
-    const user = new User({ username: usernameForUser, passwordHash: passwordHashForUser })
+    const user = new User({
+      username: usernameForUser,
+      passwordHash: passwordHashForUser,
+    })
     userCredentials = { username: usernameForUser, password: passwordForUser }
 
     const passwordHashForUser2 = await bcrypt.hash(passwordForUser2, 10)
-    const user2 = new User({ username: usernameForUser2, passwordHash: passwordHashForUser2 })
-    userCredentials = { username: usernameForUser2, password: passwordForUser2 }
+    const user2 = new User({
+      username: usernameForUser2,
+      passwordHash: passwordHashForUser2,
+    })
+    userCredentials = {
+      username: usernameForUser2,
+      password: passwordForUser2,
+    }
 
     const passwordHashForUser3 = await bcrypt.hash(passwordForUser3, 10)
-    const user3 = new User({ username: usernameForUser3, passwordHash: passwordHashForUser3 })
+    const user3 = new User({
+      username: usernameForUser3,
+      passwordHash: passwordHashForUser3,
+    })
 
     await User.insertMany([user, user2, user3])
-
   })
 
   test('users are returned as json', async () => {
@@ -435,9 +431,7 @@ describe('When there are initially three users at db', () => {
   })
 
   test('a user cannot delete a blog from other user (code 401)', async () => {
-    const result = await api
-      .post('/api/login')
-      .send(userCredentials)
+    const result = await api.post('/api/login').send(userCredentials)
 
     const userAuthorization = `bearer ${result.body.token}`
 
@@ -454,9 +448,7 @@ describe('When there are initially three users at db', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const result2 = await api
-      .post('/api/login')
-      .send(user2Credentials)
+    const result2 = await api.post('/api/login').send(user2Credentials)
     const user2Authorization = `bearer ${result2.body.token}`
 
     const toBeDeletedBlog = await Blog.findOne({ title: 'C# for dummies' })
@@ -468,7 +460,7 @@ describe('When there are initially three users at db', () => {
       .expect(401)
 
     const response = await api.get('/api/blogs')
-    const titles = response.body.map(x => x.title)
+    const titles = response.body.map((x) => x.title)
     expect(titles).toContain('C# for dummies')
   })
 })

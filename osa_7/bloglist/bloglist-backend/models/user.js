@@ -6,19 +6,19 @@ const userSchema = mongoose.Schema({
     type: String,
     minLength: 3,
     required: true,
-    unique: true
+    unique: true,
   },
   name: String,
   passwordHash: {
     type: String,
-    required: true
+    required: true,
   },
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog'
-    }
-  ]
+      ref: 'Blog',
+    },
+  ],
 })
 //password length and if undefined is checked in controller
 
@@ -30,7 +30,7 @@ userSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
     delete returnedObject.passwordHash
-  }
+  },
 })
 
 const User = mongoose.model('User', userSchema)
