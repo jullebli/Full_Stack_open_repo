@@ -18,7 +18,7 @@ describe('Blog app', function () {
       const testUser = {
         name: 'Test user',
         username: 'testuser',
-        password: 'citron'
+        password: 'citron',
       }
       cy.request('POST', 'http://localhost:3003/api/users', testUser)
       cy.visit('http://localhost:3000')
@@ -37,26 +37,30 @@ describe('Blog app', function () {
       cy.get('#password').type('wrongPassword')
       cy.get('#loggingIn').click()
 
-      cy.get('.error').should('contain', 'wrong username or password')
+      cy.get('.error')
+        .should('contain', 'wrong username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
         .and('have.css', 'border-style', 'solid')
     })
   })
   describe('When logged in', function () {
-
     beforeEach(function () {
       const testUser = {
         name: 'Test user',
         username: 'testuser',
-        password: 'citron'
+        password: 'citron',
       }
       cy.request('POST', 'http://localhost:3003/api/users', testUser)
       cy.visit('http://localhost:3000')
 
       cy.request('POST', 'http://localhost:3003/api/login', {
-        username: 'testuser', password: 'citron'
-      }).then(response => {
-        localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
+        username: 'testuser',
+        password: 'citron',
+      }).then((response) => {
+        localStorage.setItem(
+          'loggedBloglistUser',
+          JSON.stringify(response.body)
+        )
         cy.visit('http://localhost:3000')
       })
     })
@@ -69,28 +73,28 @@ describe('Blog app', function () {
       cy.get('#url').type('www.paradise.net')
       cy.get('#create').click()
 
-      cy.get('#blogListing').should('contain', 'First added blog')
+      cy.get('#blogListing')
+        .should('contain', 'First added blog')
         .and('contain', 'Adam')
-
     })
 
     it('And three blogs added, blogs will be sorted by likes', function () {
       cy.createBlog({
         title: 'This will have least likes',
         author: 'Unlikeable',
-        url: 'www.unlikeable.com'
+        url: 'www.unlikeable.com',
       })
 
       cy.createBlog({
         title: 'Second most liked blog',
         author: 'Traveler',
-        url: 'www.second.com'
+        url: 'www.second.com',
       })
 
       cy.createBlog({
         title: 'Most liked blog',
         author: 'Beloved',
-        url: 'www.liked.com'
+        url: 'www.liked.com',
       })
 
       cy.get('.blog')
@@ -112,24 +116,15 @@ describe('Blog app', function () {
         .click()
 
       //clicking likes for blogs to be sorted differently
-      cy.get('.blog')
-        .eq(2)
-        .contains('button', 'like')
-        .click()
+      cy.get('.blog').eq(2).contains('button', 'like').click()
 
       cy.wait(500)
 
-      cy.get('.blog')
-        .eq(0)
-        .contains('button', 'like')
-        .click()
+      cy.get('.blog').eq(0).contains('button', 'like').click()
 
       cy.wait(500)
 
-      cy.get('.blog')
-        .eq(2)
-        .contains('button', 'like')
-        .click()
+      cy.get('.blog').eq(2).contains('button', 'like').click()
 
       cy.wait(500)
 
@@ -148,7 +143,6 @@ describe('Blog app', function () {
         .eq(2)
         .should('contain', 'This will have least likes')
         .contains('likes 0')
-
     })
 
     describe('And one blog added', function () {
@@ -156,13 +150,12 @@ describe('Blog app', function () {
         cy.createBlog({
           title: 'Initially added blog',
           author: 'Cypress tester',
-          url: 'www.testingwithcypresscanbehard.com'
+          url: 'www.testingwithcypresscanbehard.com',
         })
       })
 
       it('A blog can be liked (two times)', function () {
-        cy.contains('Initially added blog')
-          .and('contain', 'Cypress tester')
+        cy.contains('Initially added blog').and('contain', 'Cypress tester')
         cy.get('#viewButton').click()
         cy.contains('Initially added blog')
           .and('contain', 'Cypress tester')
@@ -173,7 +166,9 @@ describe('Blog app', function () {
         cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog').get('#likeButton').click()
 
-        cy.contains('Initially added blog').get('#likesLine').contains('likes 2')
+        cy.contains('Initially added blog')
+          .get('#likesLine')
+          .contains('likes 2')
       })
 
       it('own added blog can be deleted', function () {
@@ -183,7 +178,8 @@ describe('Blog app', function () {
         cy.get('#url').type('www.remove.com')
         cy.get('#create').click()
 
-        cy.get('#blogListing').should('contain', 'Only to be removed blog')
+        cy.get('#blogListing')
+          .should('contain', 'Only to be removed blog')
           .and('contain', 'Removable')
 
         cy.get('.blog')
@@ -192,12 +188,12 @@ describe('Blog app', function () {
           .contains('button', 'view')
           .click()
 
-        cy.get('.blog')
-          .eq(1)
-          .contains('button', 'remove')
-          .click()
+        cy.get('.blog').eq(1).contains('button', 'remove').click()
 
-        cy.get('.success').should('contain', 'you deleted blog Only to be removed blog by Removable')
+        cy.get('.success').should(
+          'contain',
+          'you deleted blog Only to be removed blog by Removable'
+        )
         cy.get('#blogListing')
           .should('not.contain', 'Only to be removed')
           .and('not.contain', 'Removable')
@@ -209,14 +205,22 @@ describe('Blog app', function () {
         const newUserWithoutBlogs = {
           name: 'Blogless user',
           username: 'blogless',
-          password: 'cherry'
+          password: 'cherry',
         }
-        cy.request('POST', 'http://localhost:3003/api/users', newUserWithoutBlogs)
+        cy.request(
+          'POST',
+          'http://localhost:3003/api/users',
+          newUserWithoutBlogs
+        )
 
         cy.request('POST', 'http://localhost:3003/api/login', {
-          username: 'blogless', password: 'cherry'
-        }).then(response => {
-          localStorage.setItem('loggedBloglistUser', JSON.stringify(response.body))
+          username: 'blogless',
+          password: 'cherry',
+        }).then((response) => {
+          localStorage.setItem(
+            'loggedBloglistUser',
+            JSON.stringify(response.body)
+          )
           cy.visit('http://localhost:3000')
         })
 

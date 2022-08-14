@@ -1,5 +1,6 @@
 const middleware = require('./middleware')
 
+//eslint-disable-next-line
 const dummy = (blogs) => {
   return 1
 }

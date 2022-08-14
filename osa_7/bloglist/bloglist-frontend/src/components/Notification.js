@@ -1,14 +1,12 @@
 const Notification = ({ message, error }) => {
-
   const notificationStyle = {
     color: error ? 'red' : 'green',
     background: 'lightgrey',
     borderStyle: 'solid',
     fontSize: '20px',
     borderRadius: '5px',
-    padding: '10px'
+    padding: '10px',
   }
-
 
   if (message === null) {
     return null

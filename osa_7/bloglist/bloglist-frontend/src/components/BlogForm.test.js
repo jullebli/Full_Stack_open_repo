@@ -13,7 +13,6 @@ describe('BlogForm component', () => {
   })
 
   test('correct parameters are given to createBlog when adding a new blog', async () => {
-
     const user = userEvent.setup()
     const createButton = screen.getByText('create')
 
@@ -27,9 +26,9 @@ describe('BlogForm component', () => {
     await user.click(createButton)
 
     expect(createBlog.mock.calls[0][0]).toEqual({
-      'newAuthor': 'Toffee cat',
-      'newTitle': 'Cakes cakes cakes',
-      'newUrl': 'www.toffeecat.net'
+      newAuthor: 'Toffee cat',
+      newTitle: 'Cakes cakes cakes',
+      newUrl: 'www.toffeecat.net',
     })
   })
 })

@@ -14,7 +14,7 @@ describe('Blog component', () => {
     testUser = {
       username: 'tester2022',
       name: 'Test user',
-      passwordHash: 'Not2A4Real7Hash9'
+      passwordHash: 'Not2A4Real7Hash9',
     }
 
     testBlog = {
@@ -22,18 +22,23 @@ describe('Blog component', () => {
       author: 'Happy coders',
       url: 'www.happycoders.fi',
       likes: 5,
-      user: testUser
+      user: testUser,
     }
 
     updateBlog = jest.fn()
     deleteBlog = jest.fn()
 
-    render(<Blog blog={testBlog} updateBlog={updateBlog}
-      deleteBlog={deleteBlog} loggedInUser={testUser} />)
+    render(
+      <Blog
+        blog={testBlog}
+        updateBlog={updateBlog}
+        deleteBlog={deleteBlog}
+        loggedInUser={testUser}
+      />
+    )
   })
 
   test('displays only title and author at start', () => {
-
     const titleText = screen.getByText(testBlog.title, { exact: false })
     const authorText = screen.getByText(testBlog.author, { exact: false })
     const moreInfoDiv = screen.getByTestId('showMoreBlogInfo')
@@ -47,11 +52,9 @@ describe('Blog component', () => {
     expect(moreInfoDiv).toHaveStyle('display: none')
     expect(urlText).toBeDefined()
     expect(likesLine).toBeDefined()
-
   })
 
   test('displays also url and likes after clicking view button', async () => {
-
     const moreInfoDiv = screen.getByTestId('showMoreBlogInfo')
     //moreInfoDiv contains likeLine, url, user.name and delete button
     expect(moreInfoDiv).toHaveStyle('display: none')
@@ -72,11 +75,9 @@ describe('Blog component', () => {
     expect(moreInfoDiv).not.toHaveStyle('display: none')
     expect(urlText).toBeDefined()
     expect(likesLine).toBeDefined()
-
   })
 
   test('when correct functions are called when like button clicked twice', async () => {
-
     const user = userEvent.setup()
     const viewButton = screen.getByTestId('viewButton')
     await user.click(viewButton)

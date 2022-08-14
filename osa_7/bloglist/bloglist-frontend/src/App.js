@@ -20,11 +20,7 @@ const App = () => {
   //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(initialBlogs =>
-        setBlogs(initialBlogs)
-      )
+    blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs))
   }, [])
 
   useEffect(() => {
@@ -39,7 +35,6 @@ const App = () => {
   }, [])
 
   const timedNotification = ({ message }) => {
-
     if (!message) {
       return null
     } else {
@@ -61,11 +56,10 @@ const App = () => {
     } else {
       try {
         const user = await loginService.login({
-          username, password
+          username,
+          password,
         })
-        window.localStorage.setItem(
-          'loggedBloglistUser', JSON.stringify(user)
-        )
+        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
         loginFormRef.current.toggleVisibility()
         blogService.setToken(user.token)
         setUser(user)
@@ -92,21 +86,26 @@ const App = () => {
     const blogObject = {
       title: newTitle,
       author: newAuthor,
-      url: newUrl
+      url: newUrl,
     }
 
     try {
-      const addedBlog = await blogService
-        .create(blogObject)
+      const addedBlog = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
       const newBlogs = await blogService.getAll()
       setBlogs(newBlogs)
       //setBlogs(blogs.concat(addedBlog)) this does not rerender
       if (addedBlog) {
-        setMessage([`a new blog ${addedBlog.title} by ${addedBlog.author}`, false])
+        setMessage([
+          `a new blog ${addedBlog.title} by ${addedBlog.author}`,
+          false,
+        ])
       }
     } catch (exception) {
-      setMessage([`adding a blog failed. Error message: ${exception.message}`, true])
+      setMessage([
+        `adding a blog failed. Error message: ${exception.message}`,
+        true,
+      ])
     }
   }
 
@@ -117,17 +116,23 @@ const App = () => {
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
-      user: blog.user.id
+      user: blog.user.id,
     }
     try {
       const updatedBlog = await blogService.update(blogObject)
       if (updatedBlog) {
-        setMessage([`you liked blog ${updatedBlog.title} by ${updatedBlog.author}`, false])
+        setMessage([
+          `you liked blog ${updatedBlog.title} by ${updatedBlog.author}`,
+          false,
+        ])
         const newBlogs = await blogService.getAll()
         setBlogs(newBlogs)
       }
     } catch (exception) {
-      setMessage([`updating a blog failed. Error message: ${exception.message}`, true])
+      setMessage([
+        `updating a blog failed. Error message: ${exception.message}`,
+        true,
+      ])
     }
   }
 
@@ -136,12 +141,18 @@ const App = () => {
       try {
         const deletedBlog = await blogService.deleteBlog(blog)
         if (!deletedBlog) {
-          setMessage([`you deleted blog ${blog.title} by ${blog.author}`, false])
+          setMessage([
+            `you deleted blog ${blog.title} by ${blog.author}`,
+            false,
+          ])
           const newBlogs = await blogService.getAll()
           setBlogs(newBlogs)
         }
       } catch (exception) {
-        setMessage([`deleting the blog failed. Error message: ${exception.message}`, true])
+        setMessage([
+          `deleting the blog failed. Error message: ${exception.message}`,
+          true,
+        ])
       }
     }
   }
@@ -149,10 +160,18 @@ const App = () => {
   const loggedInMode = () => {
     return (
       <div>
-        <p>{user.name} logged in <button type='submit'
-          onClick={() => handleLogOut()} id='logOut'>logout</button></p>
+        <p>
+          {user.name} logged in{' '}
+          <button type='submit' onClick={() => handleLogOut()} id='logOut'>
+            logout
+          </button>
+        </p>
         <div>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef} id='createNewBlog'>
+          <Togglable
+            buttonLabel='create new blog'
+            ref={blogFormRef}
+            id='createNewBlog'
+          >
             <BlogForm createBlog={addBlog} />
           </Togglable>
         </div>
@@ -160,11 +179,15 @@ const App = () => {
           <h2>All blogs:</h2>
           {blogs
             .sort((a, b) => b.likes - a.likes)
-            .map(blog =>
-              <Blog key={blog.id} blog={blog}
-                updateBlog={updateBlog} deleteBlog={deleteBlog}
-                loggedInUser={user} />
-            )}
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateBlog={updateBlog}
+                deleteBlog={deleteBlog}
+                loggedInUser={user}
+              />
+            ))}
         </div>
       </div>
     )
@@ -172,11 +195,13 @@ const App = () => {
 
   return (
     <div>
-      {message[0] === null ?
-        <Notification message={message[0]} error={message[1]} /> :
-        timedNotification({ message })}
+      {message[0] === null ? (
+        <Notification message={message[0]} error={message[1]} />
+      ) : (
+        timedNotification({ message })
+      )}
       <h2>blogs</h2>
-      {user === null ?
+      {user === null ? (
         <Togglable buttonLabel='login' ref={loginFormRef} id='openLogInForm'>
           <LoginForm
             username={username}
@@ -186,7 +211,9 @@ const App = () => {
             handleSubmit={handleLogin}
           />
         </Togglable>
-        : loggedInMode()}
+      ) : (
+        loggedInMode()
+      )}
     </div>
   )
 }

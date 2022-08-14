@@ -23,7 +23,7 @@ const BlogForm = ({ createBlog }) => {
     createBlog({
       newTitle,
       newAuthor,
-      newUrl
+      newUrl,
     })
     setNewTitle('')
     setNewAuthor('')
@@ -64,14 +64,16 @@ const BlogForm = ({ createBlog }) => {
             onChange={handleUrlChange}
           />
         </div>
-        <button type='submit' id='create'>create</button>
+        <button type='submit' id='create'>
+          create
+        </button>
       </form>
     </div>
   )
 }
 
 BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm
