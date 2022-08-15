@@ -37,7 +37,7 @@ describe('Blog app', function () {
       cy.get('#password').type('wrongPassword')
       cy.get('#loggingIn').click()
 
-      cy.get('.error')
+      cy.get('#notification')
         .should('contain', 'wrong username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
         .and('have.css', 'border-style', 'solid')
@@ -190,7 +190,7 @@ describe('Blog app', function () {
 
         cy.get('.blog').eq(1).contains('button', 'remove').click()
 
-        cy.get('.success').should(
+        cy.get('#notification').should(
           'contain',
           'you deleted blog Only to be removed blog by Removable'
         )

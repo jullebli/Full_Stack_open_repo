@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
-import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { createTimedNotification } from './reducers/notificationReducer'
 
 import blogService from './services/blog'
 import loginService from './services/login'
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState([null, null]) //['messageText', error = false/true]
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -34,25 +36,12 @@ const App = () => {
     }
   }, [])
 
-  const timedNotification = ({ message }) => {
-    if (!message) {
-      return null
-    } else {
-      setTimeout(() => {
-        setMessage([null, null])
-      }, 5000)
-      return (
-        <div>
-          <Notification message={message[0]} error={message[1]} />
-        </div>
-      )
-    }
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault()
     if (!username || !password) {
-      setMessage(['username or password missing', true])
+      dispatch(
+        createTimedNotification('username or password missing', 'red', 5)
+      )
     } else {
       try {
         const user = await loginService.login({
@@ -65,9 +54,11 @@ const App = () => {
         setUser(user)
         setUsername('')
         setPassword('')
-        setMessage(['login successful', false])
+        dispatch(createTimedNotification('login successful', 'green', 5))
       } catch (exception) {
-        setMessage(['wrong username or password', true])
+        dispatch(
+          createTimedNotification('wrong username or password', 'red', 5)
+        )
       }
     }
   }
@@ -78,7 +69,7 @@ const App = () => {
     setUser(null)
     setUsername('')
     setPassword('')
-    setMessage(['logout successfull', false])
+    dispatch(createTimedNotification('logout successfull', 'green', 5))
     //loginFormRef.current.toggleVisibility()
   }
 
@@ -96,16 +87,22 @@ const App = () => {
       setBlogs(newBlogs)
       //setBlogs(blogs.concat(addedBlog)) this does not rerender
       if (addedBlog) {
-        setMessage([
-          `a new blog ${addedBlog.title} by ${addedBlog.author}`,
-          false,
-        ])
+        dispatch(
+          createTimedNotification(
+            `a new blog ${addedBlog.title} by ${addedBlog.author}`,
+            'green',
+            5
+          )
+        )
       }
     } catch (exception) {
-      setMessage([
-        `adding a blog failed. Error message: ${exception.message}`,
-        true,
-      ])
+      dispatch(
+        createTimedNotification(
+          `adding a blog failed. Error message: ${exception.message}`,
+          'red',
+          5
+        )
+      )
     }
   }
 
@@ -121,18 +118,24 @@ const App = () => {
     try {
       const updatedBlog = await blogService.update(blogObject)
       if (updatedBlog) {
-        setMessage([
-          `you liked blog ${updatedBlog.title} by ${updatedBlog.author}`,
-          false,
-        ])
+        dispatch(
+          createTimedNotification(
+            `you liked blog ${updatedBlog.title} by ${updatedBlog.author}`,
+            'green',
+            5
+          )
+        )
         const newBlogs = await blogService.getAll()
         setBlogs(newBlogs)
       }
     } catch (exception) {
-      setMessage([
-        `updating a blog failed. Error message: ${exception.message}`,
-        true,
-      ])
+      dispatch(
+        createTimedNotification(
+          `updating a blog failed. Error message: ${exception.message}`,
+          'green',
+          5
+        )
+      )
     }
   }
 
@@ -141,18 +144,24 @@ const App = () => {
       try {
         const deletedBlog = await blogService.deleteBlog(blog)
         if (!deletedBlog) {
-          setMessage([
-            `you deleted blog ${blog.title} by ${blog.author}`,
-            false,
-          ])
+          dispatch(
+            createTimedNotification(
+              `you deleted blog ${blog.title} by ${blog.author}`,
+              'green',
+              5
+            )
+          )
           const newBlogs = await blogService.getAll()
           setBlogs(newBlogs)
         }
       } catch (exception) {
-        setMessage([
-          `deleting the blog failed. Error message: ${exception.message}`,
-          true,
-        ])
+        dispatch(
+          createTimedNotification(
+            `deleting the blog failed. Error message: ${exception.message}`,
+            'red',
+            5
+          )
+        )
       }
     }
   }
@@ -195,11 +204,7 @@ const App = () => {
 
   return (
     <div>
-      {message[0] === null ? (
-        <Notification message={message[0]} error={message[1]} />
-      ) : (
-        timedNotification({ message })
-      )}
+      <Notification />
       <h2>blogs</h2>
       {user === null ? (
         <Togglable buttonLabel='login' ref={loginFormRef} id='openLogInForm'>
