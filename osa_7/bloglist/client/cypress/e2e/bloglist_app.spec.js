@@ -117,19 +117,37 @@ describe('Blog app', function () {
         .click()
 
       //clicking likes for blogs to be sorted differently
+
       cy.get('.blog').eq(2).contains('button', 'like').click()
-
-      cy.wait(500)
-
+      cy.wait(100)
+      cy.get('.blog').eq(0).contains('button', 'view').click()
       cy.get('.blog').eq(0).contains('button', 'like').click()
+      cy.wait(100)
 
-      cy.wait(500)
-
+      cy.get('.blog').eq(2).contains('button', 'view').click()
       cy.get('.blog').eq(2).contains('button', 'like').click()
 
       cy.wait(500)
 
       //checking that the order has changed accordingly
+      cy.get('.blog')
+        .eq(2)
+        .should('contain', 'This will have least likes')
+        .contains('button', 'view')
+        .click()
+
+      cy.get('.blog')
+        .eq(1)
+        .should('contain', 'Second most liked blog')
+        .contains('button', 'view')
+        .click()
+
+      cy.get('.blog')
+        .eq(0)
+        .should('contain', 'Most liked blog')
+        .contains('button', 'view')
+        .click()
+
       cy.get('.blog')
         .eq(0)
         .should('contain', 'Most liked blog')
@@ -162,11 +180,10 @@ describe('Blog app', function () {
           .and('contain', 'Cypress tester')
           .and('contain', 'likes 0')
         cy.contains('Initially added blog').get('#likeButton').click()
-        //click hide and view so that cypress manages to push same button twice
-        cy.contains('Initially added blog').get('#hide').click()
         cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog').get('#likeButton').click()
 
+        cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog')
           .get('#likesLine')
           .contains('likes 2')
