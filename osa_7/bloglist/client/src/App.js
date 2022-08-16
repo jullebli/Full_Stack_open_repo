@@ -6,7 +6,12 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { createTimedNotification } from './reducers/notificationReducer'
-import { createBlog, initializeBlogs, removeBlog } from './reducers/blogReducer'
+import {
+  createBlog,
+  initializeBlogs,
+  deleteBlog,
+  updateBlog,
+} from './reducers/blogReducer'
 
 import blogService from './services/blog'
 import loginService from './services/login'
@@ -101,7 +106,7 @@ const App = () => {
     }
   }
 
-  const updateBlog = async ({ blog }) => {
+  const likeBlog = async ({ blog }) => {
     const blogObject = {
       id: blog.id,
       title: blog.title,
@@ -111,17 +116,14 @@ const App = () => {
       user: blog.user.id,
     }
     try {
-      const updatedBlog = await blogService.update(blogObject)
-      if (updatedBlog) {
-        dispatch(
-          createTimedNotification(
-            `you liked blog ${updatedBlog.title} by ${updatedBlog.author}`,
-            'green',
-            5
-          )
+      await dispatch(updateBlog(blogObject))
+      dispatch(
+        createTimedNotification(
+          `you liked blog ${blogObject.title} by ${blogObject.author}`,
+          'green',
+          5
         )
-        dispatch(updateBlog(updatedBlog))
-      }
+      )
     } catch (exception) {
       dispatch(
         createTimedNotification(
@@ -133,20 +135,17 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async ({ blog }) => {
+  const handleDeleteBlog = async ({ blog }) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       try {
-        const deletedBlog = await blogService.deleteBlog(blog)
-        if (!deletedBlog) {
-          dispatch(
-            createTimedNotification(
-              `you deleted blog ${blog.title} by ${blog.author}`,
-              'green',
-              5
-            )
+        await dispatch(deleteBlog(blog))
+        dispatch(
+          createTimedNotification(
+            `you deleted blog ${blog.title} by ${blog.author}`,
+            'green',
+            5
           )
-          dispatch(removeBlog(deletedBlog))
-        }
+        )
       } catch (exception) {
         dispatch(
           createTimedNotification(
@@ -185,8 +184,8 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                updateBlog={updateBlog}
-                deleteBlog={deleteBlog}
+                updateBlog={likeBlog}
+                deleteBlog={handleDeleteBlog}
                 loggedInUser={user}
               />
             ))}

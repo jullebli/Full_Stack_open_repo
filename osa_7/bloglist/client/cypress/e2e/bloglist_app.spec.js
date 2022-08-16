@@ -173,6 +173,7 @@ describe('Blog app', function () {
       })
 
       it('own added blog can be deleted', function () {
+        cy.wait(300)
         cy.get('#createNewBlog').click()
         cy.get('#title').type('Only to be removed blog')
         cy.get('#author').type('Removable')
