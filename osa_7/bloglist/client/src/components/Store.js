@@ -9,4 +9,9 @@ const store = configureStore({
   },
 })
 
+store.subscribe(() => {
+  const storeNow = store.getState()
+  console.log(storeNow)
+})
+
 export default store

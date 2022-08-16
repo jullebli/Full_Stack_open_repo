@@ -19,7 +19,7 @@ import loginService from './services/login'
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
-  //const tila = useSelector((state) => state) //to see the whole state to debug
+  //const tila = useSelector((state) => state) //to see the whole state to debug, replaced by subscribe
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -86,6 +86,7 @@ const App = () => {
     }
 
     try {
+      //with await an error notification will be set, not a new blog undefined by undefined
       await dispatch(createBlog(blogObject))
       blogFormRef.current.toggleVisibility()
       dispatch(

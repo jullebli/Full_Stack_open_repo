@@ -9,7 +9,6 @@ const blogSlice = createSlice({
       return action.payload
     },
     appendBlog(state, action) {
-      //console.log('blogReducer appendBlog action', action)
       state.push(action.payload)
     },
     removeBlog(state, action) {
@@ -48,7 +47,7 @@ export const deleteBlog = (blog) => {
 
 export const updateBlog = (blog) => {
   return async (dispatch) => {
-    const updatedBlog = await blogService.reform(blog)
+    const updatedBlog = await blogService.update(blog)
     dispatch(reformBlog(updatedBlog))
   }
 }
