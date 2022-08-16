@@ -1,15 +1,7 @@
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
-  //const state = useSelector((state) => state)
-  //console.log('Notification state', state)
-  //const notification = useSelector((state) => state.notification)
-
-  //console.log('Notification notification', notification)
-
   const { content, color } = useSelector((state) => state.notification)
-  //console.log('Notification content', content)
-  //console.log('Notification color', color)
 
   if (!content) {
     return null

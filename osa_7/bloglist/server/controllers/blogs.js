@@ -16,6 +16,8 @@ blogsRouter.post('/', async (request, response) => {
     const blog = new Blog({ ...request.body, user: user.id })
 
     const savedBlog = await blog.save()
+    //populate because blogReducer createBlog only added user id
+    savedBlog.populate('user', { username: 1, name: 1 })
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 

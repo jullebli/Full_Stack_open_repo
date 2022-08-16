@@ -67,7 +67,8 @@ describe('Blog app', function () {
 
     it('A blog can be created', function () {
       cy.contains('blogs')
-      cy.contains('create new blog').click()
+      cy.wait(300)
+      cy.get('#createNewBlog').click()
       cy.get('#title').type('First added blog')
       cy.get('#author').type('Adam')
       cy.get('#url').type('www.paradise.net')
@@ -172,7 +173,7 @@ describe('Blog app', function () {
       })
 
       it('own added blog can be deleted', function () {
-        cy.contains('create new blog').click()
+        cy.get('#createNewBlog').click()
         cy.get('#title').type('Only to be removed blog')
         cy.get('#author').type('Removable')
         cy.get('#url').type('www.remove.com')

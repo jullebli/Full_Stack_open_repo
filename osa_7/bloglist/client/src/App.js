@@ -1,28 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { createTimedNotification } from './reducers/notificationReducer'
+import { createBlog, initializeBlogs, removeBlog } from './reducers/blogReducer'
 
 import blogService from './services/blog'
 import loginService from './services/login'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
+  //const tila = useSelector((state) => state) //to see the whole state to debug
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  //const [loginVisible, setLoginVisible] = useState(false)
   const blogFormRef = useRef()
   const loginFormRef = useRef()
-  //const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
   useEffect(() => {
-    blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs))
+    dispatch(initializeBlogs())
   }, [])
 
   useEffect(() => {
@@ -81,20 +81,15 @@ const App = () => {
     }
 
     try {
-      const addedBlog = await blogService.create(blogObject)
+      await dispatch(createBlog(blogObject))
       blogFormRef.current.toggleVisibility()
-      const newBlogs = await blogService.getAll()
-      setBlogs(newBlogs)
-      //setBlogs(blogs.concat(addedBlog)) this does not rerender
-      if (addedBlog) {
-        dispatch(
-          createTimedNotification(
-            `a new blog ${addedBlog.title} by ${addedBlog.author}`,
-            'green',
-            5
-          )
+      dispatch(
+        createTimedNotification(
+          `a new blog ${blogObject.title} by ${blogObject.author}`,
+          'green',
+          5
         )
-      }
+      )
     } catch (exception) {
       dispatch(
         createTimedNotification(
@@ -125,8 +120,7 @@ const App = () => {
             5
           )
         )
-        const newBlogs = await blogService.getAll()
-        setBlogs(newBlogs)
+        dispatch(updateBlog(updatedBlog))
       }
     } catch (exception) {
       dispatch(
@@ -151,8 +145,7 @@ const App = () => {
               5
             )
           )
-          const newBlogs = await blogService.getAll()
-          setBlogs(newBlogs)
+          dispatch(removeBlog(deletedBlog))
         }
       } catch (exception) {
         dispatch(
@@ -166,7 +159,7 @@ const App = () => {
     }
   }
 
-  const loggedInMode = () => {
+  const BlogList = () => {
     return (
       <div>
         <p>
@@ -179,14 +172,14 @@ const App = () => {
           <Togglable
             buttonLabel='create new blog'
             ref={blogFormRef}
-            id='createNewBlog'
+            idForButton='createNewBlog'
           >
             <BlogForm createBlog={addBlog} />
           </Togglable>
         </div>
         <div id='blogListing'>
           <h2>All blogs:</h2>
-          {blogs
+          {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
               <Blog
@@ -202,12 +195,17 @@ const App = () => {
     )
   }
 
+  //console.log('App tila ennen return', tila)
   return (
     <div>
       <Notification />
       <h2>blogs</h2>
       {user === null ? (
-        <Togglable buttonLabel='login' ref={loginFormRef} id='openLogInForm'>
+        <Togglable
+          buttonLabel='login'
+          ref={loginFormRef}
+          idForButton='openLogInForm'
+        >
           <LoginForm
             username={username}
             password={password}
@@ -217,7 +215,7 @@ const App = () => {
           />
         </Togglable>
       ) : (
-        loggedInMode()
+        <BlogList />
       )}
     </div>
   )
