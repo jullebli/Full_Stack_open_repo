@@ -180,8 +180,12 @@ describe('Blog app', function () {
           .and('contain', 'Cypress tester')
           .and('contain', 'likes 0')
         cy.contains('Initially added blog').get('#likeButton').click()
+        cy.wait(100)
+        cy.contains('you liked blog Initially added blog by Cypress tester')
         cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog').get('#likeButton').click()
+        cy.wait(100)
+        cy.contains('you liked blog Initially added blog by Cypress tester')
 
         cy.contains('Initially added blog').get('#viewButton').click()
         cy.contains('Initially added blog')

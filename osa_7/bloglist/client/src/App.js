@@ -14,31 +14,20 @@ import {
 } from './reducers/blogReducer'
 
 import blogService from './services/blog'
-import loginService from './services/login'
+import { setUser, loginUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
+  const blogFormRef = useRef()
+  const loginFormRef = useRef()
   //const tila = useSelector((state) => state) //to see the whole state to debug, replaced by subscribe
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const blogFormRef = useRef()
-  const loginFormRef = useRef()
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    } else {
-      loginFormRef.current.toggleVisibility()
-    }
   }, [])
 
   const handleLogin = async (event) => {
@@ -49,14 +38,7 @@ const App = () => {
       )
     } else {
       try {
-        const user = await loginService.login({
-          username,
-          password,
-        })
-        window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
-        loginFormRef.current.toggleVisibility()
-        blogService.setToken(user.token)
-        setUser(user)
+        await dispatch(loginUser({ username, password }))
         setUsername('')
         setPassword('')
         dispatch(createTimedNotification('login successful', 'green', 5))
@@ -71,11 +53,10 @@ const App = () => {
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedBloglistUser')
     blogService.setToken('')
-    setUser(null)
+    dispatch(setUser(null))
     setUsername('')
     setPassword('')
     dispatch(createTimedNotification('logout successfull', 'green', 5))
-    //loginFormRef.current.toggleVisibility()
   }
 
   const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
@@ -109,10 +90,7 @@ const App = () => {
 
   const likeBlog = async ({ blog }) => {
     const blogObject = {
-      id: blog.id,
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
+      ...blog,
       likes: blog.likes + 1,
       user: blog.user.id,
     }
@@ -128,8 +106,8 @@ const App = () => {
     } catch (exception) {
       dispatch(
         createTimedNotification(
-          `updating a blog failed. Error message: ${exception.message}`,
-          'green',
+          `liking a blog failed. Error message: ${exception.message}`,
+          'red',
           5
         )
       )
@@ -171,6 +149,7 @@ const App = () => {
         <div>
           <Togglable
             buttonLabel='create new blog'
+            showAtFirst={false}
             ref={blogFormRef}
             idForButton='createNewBlog'
           >
@@ -203,6 +182,7 @@ const App = () => {
       {user === null ? (
         <Togglable
           buttonLabel='login'
+          showAtFirst={true}
           ref={loginFormRef}
           idForButton='openLogInForm'
         >
