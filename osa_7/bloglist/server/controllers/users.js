@@ -13,6 +13,26 @@ usersRouter.get('/', async (request, response) => {
   response.json(users)
 })
 
+usersRouter.get('/:id', async (request, response) => {
+  const user = await User.findById(request.params.id)
+  if (user) {
+    response.json(user)
+  } else {
+    response.status(404).end()
+  }
+})
+/*
+usersRouter.get('/:id', async (request, response) => {
+  const user = await User.findById().populate('blogs', {
+    title: 1,
+    author: 1,
+    url: 1,
+  })
+  //another way: .populate('blogs', { author: 1, title: 1, url: 1, likes: 1 })
+
+  response.json(user)
+}) */
+
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 

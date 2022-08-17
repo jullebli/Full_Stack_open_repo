@@ -1,5 +1,4 @@
 import LoginForm from './LoginForm'
-import Notification from './Notification'
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './Blog'
@@ -16,13 +15,7 @@ import {
 
 import { loginUser } from '../reducers/userReducer'
 
-const Home = ({
-  handleLogOut,
-  username,
-  password,
-  setUsername,
-  setPassword,
-}) => {
+const Home = ({ username, password, setUsername, setPassword }) => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
@@ -135,12 +128,6 @@ const Home = ({
   const BlogList = () => {
     return (
       <div>
-        <p>
-          {user.name} logged in{' '}
-          <button type='submit' onClick={() => handleLogOut()} id='logOut'>
-            logout
-          </button>
-        </p>
         <div>
           <Togglable
             buttonLabel='create new blog'
@@ -170,8 +157,6 @@ const Home = ({
   }
   return (
     <div>
-      <Notification />
-      <h2>blogs</h2>
       {user === null ? (
         <Togglable
           buttonLabel='login'

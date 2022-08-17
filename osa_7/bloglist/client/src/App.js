@@ -1,18 +1,26 @@
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import Users from './components/Users'
+import UserPage from './components/UserPage'
 import Home from './components/Home'
 import blogService from './services/blog'
+import usersService from './services/usersService'
+import Notification from './components/Notification'
 import { setUser } from './reducers/userReducer'
 import { createTimedNotification } from './reducers/notificationReducer'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
+  const [users, setUsers] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-  //console.log('App tila ennen return', tila)
+
+  useEffect(() => {
+    usersService.getAll().then((initialUsers) => setUsers(initialUsers))
+  }, [])
 
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedBloglistUser')
@@ -25,21 +33,35 @@ const App = () => {
   }
 
   return (
-    <Routes>
-      <Route path='/users' element={<Users handleLogOut={handleLogOut} />} />
-      <Route
-        path='/'
-        element={
-          <Home
-            handleLogOut={handleLogOut}
-            username={username}
-            password={password}
-            setUsername={setUsername}
-            setPassword={setPassword}
-          />
-        }
-      />
-    </Routes>
+    <div>
+      <Notification />
+      <h2>blogs</h2>
+      <div>
+        {user === null ? null : (
+          <p>
+            {user.name} logged in{' '}
+            <button type='submit' onClick={() => handleLogOut()} id='logOut'>
+              logout
+            </button>
+          </p>
+        )}
+      </div>
+      <Routes>
+        <Route path='/users/:id' element={<UserPage users={users} />} />
+        <Route path='/users' element={<Users users={users} />} />
+        <Route
+          path='/'
+          element={
+            <Home
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+            />
+          }
+        />
+      </Routes>
+    </div>
   )
 }
 
