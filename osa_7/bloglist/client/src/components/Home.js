@@ -80,7 +80,6 @@ const Home = ({ username, password, setUsername, setPassword }) => {
           </Togglable>
         </div>
         <div id='blogListing'>
-          <h2>All blogs:</h2>
           {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (

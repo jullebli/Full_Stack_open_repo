@@ -10,11 +10,11 @@ import { setUser } from './reducers/userReducer'
 import { createTimedNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import Navibar from './components/Navibar'
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
   //const blogs = useSelector((state) => state.blogs)
   const [users, setUsers] = useState(null)
   const [username, setUsername] = useState('')
@@ -41,18 +41,9 @@ const App = () => {
 
   return (
     <div>
+      <Navibar handleLogOut={handleLogOut} />
       <Notification />
-      <h2>blogs</h2>
-      <div>
-        {user === null ? null : (
-          <p>
-            {user.name} logged in{' '}
-            <button type='submit' onClick={() => handleLogOut()} id='logOut'>
-              logout
-            </button>
-          </p>
-        )}
-      </div>
+      <h2>blog app</h2>
       <Routes>
         <Route path='/users/:id' element={<UserPage users={users} />} />
         <Route path='/users' element={<Users users={users} />} />

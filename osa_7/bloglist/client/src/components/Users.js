@@ -36,3 +36,4 @@ const Users = ({ users }) => {
 }
 
 export default Users
+//antother way counting blogs: {user.blogs.reduce((blogs) => blogs + 1, 0)}
