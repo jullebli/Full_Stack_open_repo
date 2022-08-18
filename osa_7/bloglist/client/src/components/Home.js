@@ -1,17 +1,11 @@
 import LoginForm from './LoginForm'
-import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
-
+import { useRef } from 'react'
 import Togglable from './Togglable'
 import { createTimedNotification } from '../reducers/notificationReducer'
-import {
-  createBlog,
-  initializeBlogs,
-  deleteBlog,
-  updateBlog,
-} from '../reducers/blogReducer'
+import { createBlog } from '../reducers/blogReducer'
 
 import { loginUser } from '../reducers/userReducer'
 
@@ -22,10 +16,6 @@ const Home = ({ username, password, setUsername, setPassword }) => {
   const blogFormRef = useRef()
   const loginFormRef = useRef()
   //const tila = useSelector((state) => state) //to see the whole state to debug, replaced by subscribe
-
-  useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -76,55 +66,6 @@ const Home = ({ username, password, setUsername, setPassword }) => {
     }
   }
 
-  const likeBlog = async ({ blog }) => {
-    const blogObject = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id,
-    }
-    try {
-      await dispatch(updateBlog(blogObject))
-      dispatch(
-        createTimedNotification(
-          `you liked blog ${blogObject.title} by ${blogObject.author}`,
-          'green',
-          5
-        )
-      )
-    } catch (exception) {
-      dispatch(
-        createTimedNotification(
-          `liking a blog failed. Error message: ${exception.message}`,
-          'red',
-          5
-        )
-      )
-    }
-  }
-
-  const handleDeleteBlog = async ({ blog }) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      try {
-        await dispatch(deleteBlog(blog))
-        dispatch(
-          createTimedNotification(
-            `you deleted blog ${blog.title} by ${blog.author}`,
-            'green',
-            5
-          )
-        )
-      } catch (exception) {
-        dispatch(
-          createTimedNotification(
-            `deleting the blog failed. Error message: ${exception.message}`,
-            'red',
-            5
-          )
-        )
-      }
-    }
-  }
-
   const BlogList = () => {
     return (
       <div>
@@ -143,13 +84,7 @@ const Home = ({ username, password, setUsername, setPassword }) => {
           {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                updateBlog={likeBlog}
-                deleteBlog={handleDeleteBlog}
-                loggedInUser={user}
-              />
+              <Blog key={blog.id} blog={blog} />
             ))}
         </div>
       </div>

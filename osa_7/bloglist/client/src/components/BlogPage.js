@@ -1,0 +1,108 @@
+import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateBlog } from '../reducers/blogReducer'
+import { createTimedNotification } from '../reducers/notificationReducer'
+import { deleteBlog } from '../reducers/blogReducer'
+
+const BlogPage = () => {
+  const dispatch = useDispatch()
+  const loggedInUser = useSelector((state) => state.user)
+  const blogs = useSelector((state) => state.blogs)
+
+  if (!blogs) {
+    return <p>Blogs is null</p>
+  }
+
+  const id = useParams().id
+  const pageBlog = blogs.find((blog) => blog.id === id)
+
+  const likeBlog = async (blog) => {
+    const blogObject = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    }
+    try {
+      await dispatch(updateBlog(blogObject))
+      dispatch(
+        createTimedNotification(
+          `you liked blog ${blogObject.title} by ${blogObject.author}`,
+          'green',
+          5
+        )
+      )
+    } catch (exception) {
+      dispatch(
+        createTimedNotification(
+          `liking a blog failed. Error message: ${exception.message}`,
+          'red',
+          5
+        )
+      )
+    }
+  }
+
+  const handleDeleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await dispatch(deleteBlog(blog))
+        dispatch(
+          createTimedNotification(
+            `you deleted blog ${blog.title} by ${blog.author}`,
+            'green',
+            5
+          )
+        )
+      } catch (exception) {
+        dispatch(
+          createTimedNotification(
+            `deleting the blog failed. Error message: ${exception.message}`,
+            'red',
+            5
+          )
+        )
+      }
+    }
+  }
+
+  const BlogInformation = () => {
+    if (!pageBlog) {
+      return null
+    }
+    return (
+      <div id='blogInformation'>
+        <h2 id='blogPageTitle'>{pageBlog.title}</h2>
+        <a href={pageBlog.url} id='blogPageUrl'>
+          {pageBlog.url}
+        </a>
+        <div id='blogPageLikesLine'>
+          {pageBlog.likes} likes{' '}
+          <button
+            style={{ background: 'yellow' }}
+            onClick={() => likeBlog(pageBlog)}
+            data-testid='likeButton'
+            id='likeButton'
+          >
+            like
+          </button>
+        </div>
+        added by {pageBlog.user.name}
+        <div>
+          {loggedInUser.username === pageBlog.user.username ? (
+            <button
+              style={{ color: 'white', background: 'blue' }}
+              onClick={() => handleDeleteBlog(pageBlog)}
+              id='remove'
+            >
+              remove
+            </button>
+          ) : null}
+        </div>
+      </div>
+    )
+  }
+
+  return <div>{pageBlog === null ? null : <BlogInformation />}</div>
+}
+
+export default BlogPage
