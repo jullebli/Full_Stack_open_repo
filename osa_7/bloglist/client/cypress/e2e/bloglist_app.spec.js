@@ -252,6 +252,7 @@ describe('Blog app', function () {
           .contains('button', 'view')
           .click()
 
+        cy.wait(100)
         cy.get('.blog')
           .should('contain', 'Test user')
           .and('not.contain', 'remove')

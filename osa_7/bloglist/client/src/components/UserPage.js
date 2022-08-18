@@ -12,9 +12,11 @@ const UserPage = ({ users }) => {
       <div>
         <h2>{pageUser.name}</h2>
         <p style={{ fontWeight: 'bold' }}>added blogs</p>
-        {pageUser.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
+        <ul>
+          {pageUser.blogs.map((blog) => (
+            <li key={blog.id}>{blog.title}</li>
+          ))}
+        </ul>
       </div>
     )
   }
