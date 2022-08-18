@@ -71,7 +71,10 @@ const BlogPage = () => {
     }
     return (
       <div id='blogInformation'>
-        <h2 id='blogPageTitle'>{pageBlog.title}</h2>
+        <h2>
+          <span id='blogPageTitle'>{pageBlog.title}, </span>
+          <span id='blogPageAuthor'>{pageBlog.author}</span>
+        </h2>
         <a href={pageBlog.url} id='blogPageUrl'>
           {pageBlog.url}
         </a>

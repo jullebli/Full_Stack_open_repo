@@ -74,9 +74,15 @@ describe('Blog app', function () {
       cy.get('#url').type('www.paradise.net')
       cy.get('#create').click()
 
-      cy.get('#blogListing')
-        .should('contain', 'First added blog')
-        .and('contain', 'Adam')
+      cy.get('#notification').should(
+        'contain',
+        'a new blog First added blog by Adam'
+      )
+      cy.get('.blogLink').should('contain', 'First added blog').click()
+      cy.get('#blogPageTitle').should('contain', 'First added blog')
+      cy.get('#blogPageUrl').should('contain', 'www.paradise.net')
+      cy.get('#blogPageLikesLine').should('contain', '0 likes')
+      cy.get('#blogInformation').should('contain', 'added by Test user')
     })
 
     it('And three blogs added, blogs will be sorted by likes', function () {
@@ -98,70 +104,51 @@ describe('Blog app', function () {
         url: 'www.liked.com',
       })
 
-      cy.get('.blog')
-        .eq(0)
-        .should('contain', 'This will have least likes')
-        .contains('button', 'view')
-        .click()
+      cy.get('.blog').eq(0).should('contain', 'This will have least likes')
 
-      cy.get('.blog')
-        .eq(1)
-        .should('contain', 'Second most liked blog')
-        .contains('button', 'view')
-        .click()
+      cy.get('.blog').eq(1).should('contain', 'Second most liked blog')
 
-      cy.get('.blog')
-        .eq(2)
-        .should('contain', 'Most liked blog')
-        .contains('button', 'view')
-        .click()
+      cy.get('.blog').eq(2).should('contain', 'Most liked blog')
 
       //clicking likes for blogs to be sorted differently
 
-      cy.get('.blog').eq(2).contains('button', 'like').click()
-      cy.wait(100)
-      cy.get('.blog').eq(0).contains('button', 'view').click()
-      cy.get('.blog').eq(0).contains('button', 'like').click()
-      cy.wait(100)
+      cy.get('.blogLink').eq(2).should('contain', 'Most liked blog').click()
 
-      cy.get('.blog').eq(2).contains('button', 'view').click()
-      cy.get('.blog').eq(2).contains('button', 'like').click()
+      cy.get('#blogPageTitle').should('contain', 'Most liked blog')
+      cy.get('#likeButton').click()
+      cy.wait(100)
+      cy.get('#likeButton').click()
+      cy.wait(100)
+      cy.get('#blogPageLikesLine').contains('2 likes')
+      cy.visit('http://localhost:3000')
 
-      cy.wait(500)
+      cy.get('.blogLink')
+        .eq(2)
+        .should('contain', 'Second most liked blog')
+        .wait(100)
+        .click()
+
+      cy.get('#blogPageTitle').should('contain', 'Second most liked blog')
+      cy.get('#likeButton').click()
+      cy.wait(100)
+      cy.get('#blogPageLikesLine').contains('1 likes')
+      cy.visit('http://localhost:3000')
+
+      cy.get('.blogLink')
+        .eq(2)
+        .should('contain', 'This will have least likes')
+        .click()
+
+      cy.get('#blogPageTitle').should('contain', 'This will have least likes')
+      cy.get('#blogPageLikesLine').contains('0 likes')
+      cy.visit('http://localhost:3000')
 
       //checking that the order has changed accordingly
-      cy.get('.blog')
-        .eq(2)
-        .should('contain', 'This will have least likes')
-        .contains('button', 'view')
-        .click()
+      cy.get('.blog').eq(2).should('contain', 'This will have least likes')
 
-      cy.get('.blog')
-        .eq(1)
-        .should('contain', 'Second most liked blog')
-        .contains('button', 'view')
-        .click()
+      cy.get('.blog').eq(1).should('contain', 'Second most liked blog')
 
-      cy.get('.blog')
-        .eq(0)
-        .should('contain', 'Most liked blog')
-        .contains('button', 'view')
-        .click()
-
-      cy.get('.blog')
-        .eq(0)
-        .should('contain', 'Most liked blog')
-        .contains('likes 2')
-
-      cy.get('.blog')
-        .eq(1)
-        .should('contain', 'Second most liked blog')
-        .contains('likes 1')
-
-      cy.get('.blog')
-        .eq(2)
-        .should('contain', 'This will have least likes')
-        .contains('likes 0')
+      cy.get('.blog').eq(0).should('contain', 'Most liked blog')
     })
 
     describe('And one blog added', function () {
@@ -175,49 +162,45 @@ describe('Blog app', function () {
 
       it('A blog can be liked (two times)', function () {
         cy.contains('Initially added blog').and('contain', 'Cypress tester')
-        cy.get('#viewButton').click()
+        cy.contains('Initially added blog Cypress tester').wait(100).click()
+
         cy.contains('Initially added blog')
-          .and('contain', 'Cypress tester')
-          .and('contain', 'likes 0')
-        cy.contains('Initially added blog').get('#likeButton').click()
+        cy.get('#blogPageAuthor').should('contain', 'Cypress tester')
+        cy.get('#blogPageLikesLine').should('contain', '0 likes')
+
+        cy.get('#likeButton').click()
         cy.wait(100)
         cy.contains('you liked blog Initially added blog by Cypress tester')
-        cy.contains('Initially added blog').get('#viewButton').click()
-        cy.contains('Initially added blog').get('#likeButton').click()
+        cy.get('#likeButton').click()
         cy.wait(100)
         cy.contains('you liked blog Initially added blog by Cypress tester')
 
-        cy.contains('Initially added blog').get('#viewButton').click()
-        cy.contains('Initially added blog')
-          .get('#likesLine')
-          .contains('likes 2')
+        cy.get('#blogPageLikesLine').contains('2 likes')
       })
 
       it('own added blog can be deleted', function () {
-        cy.wait(300)
+        cy.wait(200)
         cy.get('#createNewBlog').click()
         cy.get('#title').type('Only to be removed blog')
         cy.get('#author').type('Removable')
         cy.get('#url').type('www.remove.com')
         cy.get('#create').click()
 
-        cy.get('#blogListing')
+        cy.get('.blogLink')
           .should('contain', 'Only to be removed blog')
           .and('contain', 'Removable')
 
-        cy.get('.blog')
-          .eq(1)
-          .should('contain', 'Only to be removed blog Removable')
-          .contains('button', 'view')
-          .click()
+        cy.get('.blogLink').eq(1).contains('Only to be removed blog').click()
 
-        cy.get('.blog').eq(1).contains('button', 'remove').click()
+        cy.contains('button', 'remove').click()
 
         cy.get('#notification').should(
           'contain',
           'you deleted blog Only to be removed blog by Removable'
         )
-        cy.get('#blogListing')
+
+        cy.visit('http://localhost:3000')
+        cy.get('.blogLink')
           .should('not.contain', 'Only to be removed')
           .and('not.contain', 'Removable')
       })
@@ -247,17 +230,15 @@ describe('Blog app', function () {
           cy.visit('http://localhost:3000')
         })
 
-        cy.get('.blog')
-          .contains('Initially added blog')
-          .contains('button', 'view')
+        cy.get('#blogLink')
+          .contains('Initially added blog Cypress tester')
           .click()
 
-        cy.wait(100)
-        cy.get('.blog')
-          .should('contain', 'Test user')
-          .and('not.contain', 'remove')
-
-        cy.get('#blogListing').should('not.contain', 'remove')
+        cy.get('#blogInformation').should(
+          'not.contain',
+          'added by Blogless user'
+        )
+        cy.should('not.contain', 'remove')
       })
     })
   })

@@ -11,8 +11,8 @@ const Blog = ({ blog }) => {
 
   return (
     <div style={blogStyle} className='blog'>
-      <Link to={`/blogs/${blog.id}`} id='titleLink'>
-        {blog.title}
+      <Link to={`/blogs/${blog.id}`} className='blogLink' id='blogLink'>
+        {blog.title} {blog.author}
       </Link>
     </div>
   )
