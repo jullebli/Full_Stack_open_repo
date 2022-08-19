@@ -9,7 +9,7 @@ const linkStyle = {
 const Navibar = ({ handleLogOut }) => {
   const user = useSelector((state) => state.user)
   return (
-    <Navbar collapseSelect expand='lg' bg='light' variant='light'>
+    <Navbar collapseOnSelect expand='lg' bg='light' variant='light'>
       <Navbar.Toggle aria-controls='responsive-navbar-nav' />
       <Navbar.Collapse id='responsive-navbar-nav'>
         <Nav className='mr-auto'>
