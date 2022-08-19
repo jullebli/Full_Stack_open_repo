@@ -8,10 +8,15 @@ import usersService from './services/users'
 import Notification from './components/Notification'
 import { setUser } from './reducers/userReducer'
 import { createTimedNotification } from './reducers/notificationReducer'
+import { loginUser } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import Navibar from './components/Navibar'
+import { Container } from '@mui/material'
+//import Typography from '@mui/material/Typography'
+//import { blue } from '@mui/material/colors'
+import './index.css'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -39,11 +44,31 @@ const App = () => {
     navigate('/')
   }
 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    if (!username || !password) {
+      dispatch(
+        createTimedNotification('username or password missing', 'red', 5)
+      )
+    } else {
+      try {
+        await dispatch(loginUser({ username, password }))
+        setUsername('')
+        setPassword('')
+        dispatch(createTimedNotification('login successful', 'green', 5))
+      } catch (exception) {
+        dispatch(
+          createTimedNotification('wrong username or password', 'red', 5)
+        )
+      }
+    }
+  }
+  //in NaviBar also handleLogin?
   return (
-    <div>
+    <Container>
       <Navibar handleLogOut={handleLogOut} />
       <Notification />
-      <h2>blog app</h2>
+      <h1>blog app</h1>
       <Routes>
         <Route path='/users/:id' element={<UserPage users={users} />} />
         <Route path='/users' element={<Users users={users} />} />
@@ -56,11 +81,12 @@ const App = () => {
               password={password}
               setUsername={setUsername}
               setPassword={setPassword}
+              handleLogin={handleLogin}
             />
           }
         />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

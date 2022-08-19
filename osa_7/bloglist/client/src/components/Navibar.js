@@ -1,50 +1,46 @@
-import { Nav, Navbar } from 'react-bootstrap'
+//import { Nav, Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { AppBar, Toolbar, Button } from '@mui/material'
+//import { blue } from '@mui/material/colors'
 
-const linkStyle = {
-  margin: 0.5,
+const textStyle = {
+  margin: 10,
 }
 
-const Navibar = ({ handleLogOut }) => {
+const NaviBar = ({ handleLogOut }) => {
   const user = useSelector((state) => state.user)
   return (
-    <Navbar collapseOnSelect expand='lg' bg='light' variant='light'>
-      <Navbar.Toggle aria-controls='responsive-navbar-nav' />
-      <Navbar.Collapse id='responsive-navbar-nav'>
-        <Nav className='mr-auto'>
-          {user ? (
-            <Nav.Link href='#' as='span'>
-              <Link style={linkStyle} to='/'>
-                blogs
-              </Link>
-            </Nav.Link>
-          ) : null}
-          <Nav.Link href='#' as='span'>
-            <Link style={linkStyle} to='/users'>
-              users
-            </Link>
-          </Nav.Link>
-          <Nav.Link href='#' as='span'>
-            {user ? (
-              <p>
-                {user.name} logged in{' '}
-                <button
-                  type='submit'
-                  onClick={() => handleLogOut()}
-                  id='logOut'
-                >
-                  logout
-                </button>
-              </p>
-            ) : (
-              <Link to='/'>login</Link>
-            )}
-          </Nav.Link>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+    <AppBar position='static'>
+      <Toolbar>
+        {user ? (
+          <Button color='inherit' component={Link} to='/'>
+            blogs
+          </Button>
+        ) : null}
+        <Button color='inherit' component={Link} to='/users'>
+          users
+        </Button>
+        {user ? (
+          <div style={textStyle}>
+            <span style={{ marginRight: 5 }}>{user.name} LOGGED IN </span>
+            <Button
+              variant='contained'
+              type='submit'
+              onClick={() => handleLogOut()}
+              id='logOut'
+            >
+              logout
+            </Button>
+          </div>
+        ) : (
+          <Button color='inherit' component={Link} to='/'>
+            login
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   )
 }
 
-export default Navibar
+export default NaviBar

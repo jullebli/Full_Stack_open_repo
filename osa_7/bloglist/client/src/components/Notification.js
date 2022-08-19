@@ -1,3 +1,4 @@
+import { Alert } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
@@ -7,20 +8,19 @@ const Notification = () => {
     return null
   }
 
-  const notificationStyle = {
-    color: color,
-    background: 'lightgrey',
-    borderStyle: 'solid',
-    fontSize: '20px',
-    borderRadius: '5px',
-    padding: '10px',
+  if (color === 'green') {
+    return (
+      <Alert severity='success' id='notification'>
+        {content}
+      </Alert>
+    )
+  } else if (color === 'red') {
+    return (
+      <Alert severity='error' id='notification'>
+        {content}
+      </Alert>
+    )
   }
-
-  return (
-    <div style={notificationStyle} id='notification'>
-      {content}
-    </div>
-  )
 }
 
 export default Notification

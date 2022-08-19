@@ -1,0 +1,22 @@
+
+* {
+  font-size: 102%;
+  font-family: Calibri;
+}
+
+body {
+  background-color: rgb(153, 221, 236);
+}
+
+h1 {
+  margin-bottom: 20px;
+  color:rgb(25, 25, 151);
+}
+h2, h3 {
+  margin: 20px 0px 10px 0px;
+  color:rgb(25, 25, 151);
+}
+
+.coloredText {
+  color:rgb(25, 25, 151);
+}

@@ -28,7 +28,7 @@ describe('Blog app', function () {
       cy.get('#password').type('citron')
       cy.get('#loggingIn').click()
 
-      cy.contains('Test user logged in')
+      cy.contains('Test user LOGGED IN')
       cy.get('#logOut').contains('logout')
     })
 
@@ -37,10 +37,7 @@ describe('Blog app', function () {
       cy.get('#password').type('wrongPassword')
       cy.get('#loggingIn').click()
 
-      cy.get('#notification')
-        .should('contain', 'wrong username or password')
-        .and('have.css', 'color', 'rgb(255, 0, 0)')
-        .and('have.css', 'border-style', 'solid')
+      cy.get('#notification').contains('wrong username or password')
     })
   })
   describe('When logged in', function () {
@@ -161,8 +158,9 @@ describe('Blog app', function () {
       })
 
       it('A blog can be liked (two times)', function () {
-        cy.contains('Initially added blog').and('contain', 'Cypress tester')
-        cy.contains('Initially added blog Cypress tester').wait(100).click()
+        cy.contains('Initially added blog')
+        cy.contains('Cypress tester')
+        cy.contains('Initially added blog').wait(100).click()
 
         cy.contains('Initially added blog')
         cy.get('#blogPageAuthor').should('contain', 'Cypress tester')
@@ -186,7 +184,7 @@ describe('Blog app', function () {
         cy.get('#url').type('www.remove.com')
         cy.get('#create').click()
 
-        cy.get('.blogLink')
+        cy.get('.blog')
           .should('contain', 'Only to be removed blog')
           .and('contain', 'Removable')
 
@@ -200,7 +198,7 @@ describe('Blog app', function () {
         )
 
         cy.visit('http://localhost:3000')
-        cy.get('.blogLink')
+        cy.get('.blog')
           .should('not.contain', 'Only to be removed')
           .and('not.contain', 'Removable')
       })
@@ -230,9 +228,7 @@ describe('Blog app', function () {
           cy.visit('http://localhost:3000')
         })
 
-        cy.get('#blogLink')
-          .contains('Initially added blog Cypress tester')
-          .click()
+        cy.get('#blogLink').contains('Initially added blog').click()
 
         cy.get('#blogInformation').should(
           'not.contain',

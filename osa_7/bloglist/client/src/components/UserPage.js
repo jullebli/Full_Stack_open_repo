@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
+import '../index.css'
+//import { blue } from '@mui/material/colors'
 
 const UserPage = ({ users }) => {
   if (!users) {
@@ -11,12 +13,14 @@ const UserPage = ({ users }) => {
     return (
       <div>
         <h2>{pageUser.name}</h2>
-        <p style={{ fontWeight: 'bold' }}>added blogs</p>
-        <ul>
-          {pageUser.blogs.map((blog) => (
-            <li key={blog.id}>{blog.title}</li>
-          ))}
-        </ul>
+        <div className='coloredText'>
+          <div style={{ fontWeight: 'bold' }}>added blogs</div>
+          <ul>
+            {pageUser.blogs.map((blog) => (
+              <li key={blog.id}>{blog.title}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     )
   }

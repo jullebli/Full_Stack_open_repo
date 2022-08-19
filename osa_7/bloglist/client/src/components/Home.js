@@ -1,41 +1,26 @@
 import LoginForm from './LoginForm'
-import { useDispatch, useSelector } from 'react-redux'
-import Blog from './Blog'
 import BlogForm from './BlogForm'
-import { useRef } from 'react'
 import Togglable from './Togglable'
-import { createTimedNotification } from '../reducers/notificationReducer'
+import BlogList from './BlogList'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { useRef } from 'react'
 import { createBlog } from '../reducers/blogReducer'
+import { createTimedNotification } from '../reducers/notificationReducer'
 
-import { loginUser } from '../reducers/userReducer'
-
-const Home = ({ username, password, setUsername, setPassword }) => {
+const Home = ({
+  username,
+  password,
+  setUsername,
+  setPassword,
+  handleLogin,
+}) => {
   const dispatch = useDispatch()
-  const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
-  const blogFormRef = useRef()
-  const loginFormRef = useRef()
-  //const tila = useSelector((state) => state) //to see the whole state to debug, replaced by subscribe
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    if (!username || !password) {
-      dispatch(
-        createTimedNotification('username or password missing', 'red', 5)
-      )
-    } else {
-      try {
-        await dispatch(loginUser({ username, password }))
-        setUsername('')
-        setPassword('')
-        dispatch(createTimedNotification('login successful', 'green', 5))
-      } catch (exception) {
-        dispatch(
-          createTimedNotification('wrong username or password', 'red', 5)
-        )
-      }
-    }
-  }
+  const loginFormRef = useRef()
+  const blogFormRef = useRef()
+  //const tila = useSelector((state) => state) //to see the whole state to debug, replaced by subscribe
 
   const addBlog = async ({ title, author, url, comments }) => {
     const blogObject = {
@@ -67,29 +52,6 @@ const Home = ({ username, password, setUsername, setPassword }) => {
     }
   }
 
-  const BlogList = () => {
-    return (
-      <div>
-        <div>
-          <Togglable
-            buttonLabel='create new blog'
-            showAtFirst={false}
-            ref={blogFormRef}
-            idForButton='createNewBlog'
-          >
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-        </div>
-        <div id='blogListing'>
-          {[...blogs]
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog key={blog.id} blog={blog} />
-            ))}
-        </div>
-      </div>
-    )
-  }
   return (
     <div>
       {user === null ? (
@@ -108,7 +70,17 @@ const Home = ({ username, password, setUsername, setPassword }) => {
           />
         </Togglable>
       ) : (
-        <BlogList />
+        <div>
+          <Togglable
+            buttonLabel='create new blog'
+            showAtFirst={false}
+            ref={blogFormRef}
+            idForButton='createNewBlog'
+          >
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
+          <BlogList />
+        </div>
       )}
     </div>
   )

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateBlog } from '../reducers/blogReducer'
 import { createTimedNotification } from '../reducers/notificationReducer'
@@ -7,11 +7,12 @@ import CommentForm from './CommentForm'
 
 const BlogPage = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const loggedInUser = useSelector((state) => state.user)
   const blogs = useSelector((state) => state.blogs)
 
   if (!blogs) {
-    return <p>Blogs is null</p>
+    return <div>Blog is null</div>
   }
 
   const id = useParams().id
@@ -54,6 +55,7 @@ const BlogPage = () => {
             5
           )
         )
+        navigate('/')
       } catch (exception) {
         dispatch(
           createTimedNotification(
@@ -71,7 +73,7 @@ const BlogPage = () => {
       return null
     }
     return (
-      <div>
+      <div className='coloredText'>
         <div id='blogInformation'>
           <h2>
             <span id='blogPageTitle'>{pageBlog.title}, </span>

@@ -4,6 +4,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
+//Blog is no longer used so this test should be reedited as BlogListtest?
+
 describe('Blog component', () => {
   let testUser
   let testBlog
