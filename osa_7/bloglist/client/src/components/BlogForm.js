@@ -21,10 +21,11 @@ const BlogForm = ({ createBlog }) => {
   const addBlog = (event) => {
     event.preventDefault()
     createBlog({
-      newTitle,
-      newAuthor,
-      newUrl,
-    })
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+    }) //if you add comments: [{ comment: 'this is comment'}, { comment: 'also a comment'}]
+    //you can create default comments. In model default is []
     setNewTitle('')
     setNewAuthor('')
     setNewUrl('')

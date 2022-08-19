@@ -37,11 +37,12 @@ const Home = ({ username, password, setUsername, setPassword }) => {
     }
   }
 
-  const addBlog = async ({ newTitle, newAuthor, newUrl }) => {
+  const addBlog = async ({ title, author, url, comments }) => {
     const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
+      title,
+      author,
+      url,
+      comments,
     }
 
     try {

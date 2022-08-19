@@ -74,4 +74,23 @@ blogsRouter.put('/:id', async (request, response) => {
   response.json(updatedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  //this solution will not add comments to blogs listed in 3003/api/users
+  if (!request.body) {
+    response.status(400).json({ error: 'comment cannot be empty' })
+  }
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  })
+
+  blog.comments = blog.comments.concat(request.body)
+  const commentedBlog = await blog.save()
+
+  if (!commentedBlog) {
+    response.status(404).json({ error: 'commenting failed' })
+  }
+  response.status(200).json(commentedBlog)
+})
+
 module.exports = blogsRouter

@@ -70,36 +70,46 @@ const BlogPage = () => {
       return null
     }
     return (
-      <div id='blogInformation'>
-        <h2>
-          <span id='blogPageTitle'>{pageBlog.title}, </span>
-          <span id='blogPageAuthor'>{pageBlog.author}</span>
-        </h2>
-        <a href={pageBlog.url} id='blogPageUrl'>
-          {pageBlog.url}
-        </a>
-        <div id='blogPageLikesLine'>
-          {pageBlog.likes} likes{' '}
-          <button
-            style={{ background: 'yellow' }}
-            onClick={() => likeBlog(pageBlog)}
-            data-testid='likeButton'
-            id='likeButton'
-          >
-            like
-          </button>
-        </div>
-        added by {pageBlog.user.name}
-        <div>
-          {loggedInUser.username === pageBlog.user.username ? (
+      <div>
+        <div id='blogInformation'>
+          <h2>
+            <span id='blogPageTitle'>{pageBlog.title}, </span>
+            <span id='blogPageAuthor'>{pageBlog.author}</span>
+          </h2>
+          <a href={pageBlog.url} id='blogPageUrl'>
+            {pageBlog.url}
+          </a>
+          <div id='blogPageLikesLine'>
+            {pageBlog.likes} likes{' '}
             <button
-              style={{ color: 'white', background: 'blue' }}
-              onClick={() => handleDeleteBlog(pageBlog)}
-              id='remove'
+              style={{ background: 'yellow' }}
+              onClick={() => likeBlog(pageBlog)}
+              data-testid='likeButton'
+              id='likeButton'
             >
-              remove
+              like
             </button>
-          ) : null}
+          </div>
+          added by {pageBlog.user.name}
+          <div>
+            {loggedInUser.username === pageBlog.user.username ? (
+              <button
+                style={{ color: 'white', background: 'blue' }}
+                onClick={() => handleDeleteBlog(pageBlog)}
+                id='remove'
+              >
+                remove
+              </button>
+            ) : null}
+          </div>
+        </div>
+        <div id='blogPageCommentSection' style={{ marginTop: 10 }}>
+          <h3>comments</h3>
+          <ul>
+            {pageBlog.comments.map((commentObject) => (
+              <li key={commentObject.comment}>{commentObject.comment}</li>
+            ))}
+          </ul>
         </div>
       </div>
     )

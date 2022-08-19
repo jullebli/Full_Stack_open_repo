@@ -5,5 +5,7 @@ Content-Type: application/json
   "title": "Updated title",
   "author": "Updated author",
   "url": "www.updated.fi",
-  "likes": 100
+  "likes": 100,
+  "comments": [{ "comment": "this is first comment"},
+  { "comment": "this is second comment"}]
 }

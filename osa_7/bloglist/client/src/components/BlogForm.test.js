@@ -26,9 +26,9 @@ describe('BlogForm component', () => {
     await user.click(createButton)
 
     expect(createBlog.mock.calls[0][0]).toEqual({
-      newAuthor: 'Toffee cat',
-      newTitle: 'Cakes cakes cakes',
-      newUrl: 'www.toffeecat.net',
+      author: 'Toffee cat',
+      title: 'Cakes cakes cakes',
+      url: 'www.toffeecat.net',
     })
   })
 })
