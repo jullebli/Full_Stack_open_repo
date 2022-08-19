@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateBlog } from '../reducers/blogReducer'
 import { createTimedNotification } from '../reducers/notificationReducer'
 import { deleteBlog } from '../reducers/blogReducer'
+import CommentForm from './CommentForm'
 
 const BlogPage = () => {
   const dispatch = useDispatch()
@@ -103,14 +104,12 @@ const BlogPage = () => {
             ) : null}
           </div>
         </div>
-        <div id='blogPageCommentSection' style={{ marginTop: 10 }}>
-          <h3>comments</h3>
-          <ul>
-            {pageBlog.comments.map((commentObject) => (
-              <li key={commentObject.comment}>{commentObject.comment}</li>
-            ))}
-          </ul>
-        </div>
+        <CommentForm commentedBlog={pageBlog} />
+        <ul>
+          {pageBlog.comments.map((commentObject) => (
+            <li key={commentObject.comment}>{commentObject.comment}</li>
+          ))}
+        </ul>
       </div>
     )
   }

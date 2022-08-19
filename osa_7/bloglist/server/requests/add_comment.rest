@@ -1,6 +1,6 @@
-POST http://localhost:3003/api/blogs/InsertBlogIdHere/comments
+POST http://localhost:3003/api/blogs/62ff72e2e8d8dba679e840a3/comments
 Content-Type: application/json
 
 {
-  "comment": "this is a comment"
+  "comment": "this comment has been brought to you via backend request"
 }

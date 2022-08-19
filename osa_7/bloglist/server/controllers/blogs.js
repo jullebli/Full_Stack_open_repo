@@ -76,6 +76,7 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => {
   //this solution will not add comments to blogs listed in 3003/api/users
+
   if (!request.body) {
     response.status(400).json({ error: 'comment cannot be empty' })
   }

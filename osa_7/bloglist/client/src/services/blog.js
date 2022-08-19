@@ -28,7 +28,7 @@ const update = async (updatedBlog) => {
 
 const comment = async (commentedBlog, comment) => {
   const response = await axios.post(
-    `${baseUrl}/${commentedBlog.id}/comment`,
+    `${baseUrl}/${commentedBlog.id}/comments`,
     comment
   )
   return response.data
