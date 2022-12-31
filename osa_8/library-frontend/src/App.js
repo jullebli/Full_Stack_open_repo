@@ -10,12 +10,12 @@ const App = () => {
   const [page, setPage] = useState("authors");
   const authorsResult = useQuery(ALL_AUTHORS);
   const booksResult = useQuery(ALL_BOOKS);
-
+  
   if (authorsResult.loading || booksResult.loading) {
     return <div>loading...</div>;
   }
 
-  return (
+ return (
     <div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
@@ -29,7 +29,8 @@ const App = () => {
       <Books show={page === "books"} books={booksResult.data.allBooks} />
       <NewBook show={page === "add"} />
     </div>
-  );
-};
+  )
+}
 
 export default App;
+
