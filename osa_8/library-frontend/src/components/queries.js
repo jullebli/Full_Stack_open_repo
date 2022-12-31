@@ -38,7 +38,6 @@ export const ADD_BOOK = gql`
       title
       published
       id
-      author
       genres
     }
   }
@@ -58,4 +57,18 @@ export const EDIT_AUTHOR = gql`
       bookCount
     }
   }
+`;
+
+export const LOGIN = gql`
+mutation login(
+  $username: String!
+  $password: String!
+) {
+  login(
+    username: $username
+    password: $password
+  ) {
+    value
+  }
+}
 `;

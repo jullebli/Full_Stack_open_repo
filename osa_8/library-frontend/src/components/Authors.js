@@ -25,8 +25,8 @@ const Authors = (props) => {
   };
 
   const handleChange = (event) => {
-    setName(event.value)
-  }
+    setName(event.value);
+  };
 
   return (
     <div>
@@ -47,23 +47,27 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h3>Set birthyear</h3>
-      <form onSubmit={edit}>
-        <Select
-          onChange={handleChange}
-          options={authors.map((author) => {
-            return { value: author.name, label: author.name }
-          })}
-        ></Select>
+      {localStorage.getItem("user-token") ? (
         <div>
-          born
-          <input
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
+          <h3>Set birthyear</h3>
+          <form onSubmit={edit}>
+            <Select
+              onChange={handleChange}
+              options={authors.map((author) => {
+                return { value: author.name, label: author.name };
+              })}
+            ></Select>
+            <div>
+              born
+              <input
+                value={born}
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button type="submit">update author</button>
+          </form>
         </div>
-        <button type="submit">update author</button>
-      </form>
+      ) : null}
     </div>
   );
 };
