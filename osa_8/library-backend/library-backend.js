@@ -20,14 +20,6 @@ mongoose
  * Suomi:
  * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
  * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- *
- * English:
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
- *
- * Spanish:
- * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
- * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conección con el libro
  */
 
 const typeDefs = gql`
@@ -69,49 +61,56 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      //if (args.author) {
-      //  bookList = bookList.filter((book) => book.author === args.author);
-      //}
-      //if (args.genre) {
-      //  bookList = bookList.filter((book) => book.genres.includes(args.genre));
-      //}
-      return Book.find({});
+      let bookList = await Book.find({}).populate("author")
+      if (args.author) {
+        const foundAuthor = await Author.findOne({ name: args.author });
+        bookList = await Book.find({ author: foundAuthor.id }).populate("author");
+      }
+      if (args.genre) {
+        bookList = await Book.find({ genres: { $in: [args.genre]}}).populate("author");
+      }
+      return bookList;
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => await Author.find({}),
   },
   Author: {
-    bookCount: (root) => Book.find({ author: root.name }).length,
+    bookCount: async (root) => {
+      const foundAuthor = await Author.findOne({ name: root.name });
+        const bookList = await Book.find({ author: foundAuthor.id })
+        return bookList.length;
+    }
   },
   Mutation: {
     addBook: async (root, args) => {
       const foundAuthor = await Author.findOne({ name: args.author });
-      //console.log("foundAuthor", foundAuthor);
       let book;
 
       if (foundAuthor) {
         foundAuthor.bookCount = foundAuthor.bookCount + 1;
-        book = new Book({ ...args, author: foundAuthor });
+        book = new Book({ ...args, author: foundAuthor.id })
       } else {
         const newAuthor = Author({ name: args.author, bookCount: 1 });
-        //console.log("newAuthor", newAuthor);
         await newAuthor.save();
-        book = new Book({ ...args, author: newAuthor });
+        book = new Book({ ...args, author: newAuthor.id })
       }
-
-      return book.save();
+      await book.save()
+      return book;
     },
     editAuthor: async (root, args) => {
-      /*
-      const author = Author.find({ name: args.name });
+      const author = await Author.findOne({ name: args.name });
       if (!author) {
         return null;
       }
-
-      const editedAuthor = { ...author, born: args.setBornTo };
-
-      return editedAuthor.save; */
-      return await Author.update({ name: args.name }, { born: args.setBornTo})
-    },
+      author.born = args.setBornTo
+      try {
+        await author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+      return author
+    }
   },
 };
 
