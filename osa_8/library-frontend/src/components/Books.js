@@ -1,14 +1,22 @@
+import { useQuery } from "@apollo/client";
+import { ALL_GENRES } from "./queries";
+
 const Books = (props) => {
+  const allGenres = useQuery(ALL_GENRES);
   if (!props.show) {
-    return null
+    return null;
   }
 
-  const books = props.books
+  const books = props.books;
+
+  if (allGenres.loading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <div>
       <h2>books</h2>
-
+      <p>in genre {props.showGenres}</p>
       <table>
         <tbody>
           <tr>
@@ -25,8 +33,16 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+      {allGenres.data.allGenres.map((genre) => {
+        return (
+          <button key={genre} onClick={() => props.setShowGenres(genre)}>
+            {genre}
+          </button>
+        );
+      })}
+      <button onClick={() => props.setShowGenres("all genres")}>all genres</button>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;

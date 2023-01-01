@@ -1,11 +1,16 @@
-const { ApolloServer, UserInputError, gql, AuthenticationError } = require("apollo-server");
+const {
+  ApolloServer,
+  UserInputError,
+  gql,
+  AuthenticationError,
+} = require("apollo-server");
 const { v1: uuid } = require("uuid");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Book = require("./models/book");
 const Author = require("./models/author");
 const User = require("./models/user");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 console.log("connecting to", process.env.MONGODB_URI);
 
@@ -56,6 +61,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
+    allGenres: [String!]!
   }
 
   type Mutation {
@@ -66,14 +72,8 @@ const typeDefs = gql`
       genres: [String!]!
     ): Book!
     editAuthor(name: String!, setBornTo: Int!): Author
-    createUser(
-      username: String!
-      favoriteGenre: String!
-    ): User
-    login(
-      username: String!
-      password: String!
-    ): Token
+    createUser(username: String!, favoriteGenre: String!): User
+    login(username: String!, password: String!): Token
   }
 `;
 
@@ -90,16 +90,34 @@ const resolvers = {
         );
       }
       if (args.genre) {
-        bookList = await Book.find({ genres: { $in: [args.genre] } }).populate(
-          "author"
-        );
+        if (args.genre !== "all genres") {
+          bookList = await Book.find({
+            genres: { $in: [args.genre] },
+          }).populate("author");
+        }
       }
       return bookList;
     },
     allAuthors: async () => await Author.find({}),
     me: (root, args, context) => {
-      return context.currentUser
-    }
+      return context.currentUser;
+    },
+    allGenres: async () => {
+      const books = await Book.find({});
+      let bookGenres = books.map((b) => b.genres);
+      //console.log("bookGenres", bookGenres);
+      let distinctGenres = [];
+      for (let i = 0; i < bookGenres.length; i++) {
+        const genre = bookGenres[i];
+        for (let j = 0; j < genre.length; j++) {
+          if (!distinctGenres.includes(genre[j])) {
+            distinctGenres.push(genre[j]);
+          }
+        }
+      }
+      //console.log("distinctGenres", distinctGenres);
+      return distinctGenres;
+    },
   },
   Author: {
     bookCount: async (root) => {
@@ -110,11 +128,11 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args, context) => {
-      const foundAuthor = await Author.findOne({ name: args.author })
-      const currentUser = context.currentUser
+      const foundAuthor = await Author.findOne({ name: args.author });
+      const currentUser = context.currentUser;
 
       if (!currentUser) {
-        throw new AuthenticationError("Only logged in users can add books")
+        throw new AuthenticationError("Only logged in users can add books");
       }
       let book;
 
@@ -125,39 +143,39 @@ const resolvers = {
         const newAuthor = Author({ name: args.author, bookCount: 1 });
         await newAuthor.save().catch((error) => {
           throw new UserInputError(error.message, {
-            invalidArgs: args
+            invalidArgs: args,
           });
         });
-        book = new Book({ ...args, author: newAuthor.id })
+        book = new Book({ ...args, author: newAuthor.id });
       }
       await book.save().catch((error) => {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
         });
       });
 
       await currentUser.save().catch((error) => {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
         });
       });
 
       return book;
     },
     editAuthor: async (root, args, context) => {
-      const currentUser = context.currentUser
+      const currentUser = context.currentUser;
 
       if (!currentUser) {
-        throw new AuthenticationError("Only logged in users can edit authors")
+        throw new AuthenticationError("Only logged in users can edit authors");
       }
 
-      const author = await Author.findOne({ name: args.name })
+      const author = await Author.findOne({ name: args.name });
       if (!author) {
-        return null
+        return null;
       }
       author.born = args.setBornTo;
       try {
-        await author.save()
+        await author.save();
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -166,27 +184,27 @@ const resolvers = {
       return author;
     },
     createUser: async (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({ username: args.username });
 
-      return await user.save().catch(error => {
+      return await user.save().catch((error) => {
         throw new UserInputError(error.message, {
-          invalidArgs: args
-        })
-      })
+          invalidArgs: args,
+        });
+      });
     },
     login: async (root, args) => {
-      const user = await User.findOne({ username: args.username })
+      const user = await User.findOne({ username: args.username });
 
       if (!user || args.password !== "samePasswordForAll") {
-        throw new UserInputError("Wrong credentials")
+        throw new UserInputError("Wrong credentials");
       }
 
       const userForToken = {
         username: user.username,
-        id: user._id
-      }
-      return { value: jwt.sign(userForToken, process.env.JWT_SECRET)}
-    }
+        id: user._id,
+      };
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
   },
 };
 
@@ -194,15 +212,16 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.toLowerCase().startsWith("bearer ")) {
       const decodedToken = jwt.verify(
-        auth.substring(7), process.env.JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
+        auth.substring(7),
+        process.env.JWT_SECRET
+      );
+      const currentUser = await User.findById(decodedToken.id);
+      return { currentUser };
     }
-  }
+  },
 });
 
 server.listen().then(({ url }) => {
