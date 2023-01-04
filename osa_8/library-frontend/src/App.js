@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery, useLazyQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
