@@ -23,8 +23,9 @@ const App = () => {
   const [showGenres, setShowGenres] = useState("all genres");
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      console.log(data)
-      window.alert(`New book: ${data.data.bookAdded.title} has been added`);
+      const addedBook = data.data.bookAdded
+      window.alert(`New book: ${addedBook.title} has been added`);
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
     },
   });
   let genre;
@@ -50,6 +51,8 @@ const App = () => {
   if (showGenres !== "all genres") {
     booksResult = genreBooks;
   }
+
+  //console.log("booksResult", booksResult)
 
   return (
     <div>
@@ -103,3 +106,22 @@ const App = () => {
 };
 
 export default App;
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqueByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.id
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+ 
+  
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqueByName(allBooks.concat(addedBook))
+    }
+  })
+  
+}

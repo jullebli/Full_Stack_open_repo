@@ -68,13 +68,17 @@ export const ADD_BOOK = gql`
       author: $author
       genres: $genres
     ) {
-      title
-      published
       id
+      title
+      author {
+        name
+        bookCount
+      }
+      published
       genres
     }
   }
-`; //koita tähän myös book_details
+`;
 
 export const EDIT_AUTHOR = gql`
   mutation setBorn($name: String!, $born: Int!) {
