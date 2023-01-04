@@ -3,8 +3,7 @@ const Recommend = (props) => {
   if (!props.show) {
     return null
   }
-  console.log(props.favoriteGenre)
-  console.log(props.books)
+
   return (
     <div>
       <p>books in your favorite genre {props.favoriteGenre}</p>

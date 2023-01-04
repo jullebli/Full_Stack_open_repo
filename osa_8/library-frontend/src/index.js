@@ -11,7 +11,7 @@ import {
 
 const authLink = setContext((_, { headers}) => {
   const token = localStorage.getItem("user-token")
-  console.log("authorization header is made with token " + token)
+  //console.log("authorization header is made with token " + token)
   return {
     headers: {
       ...headers,
@@ -21,7 +21,7 @@ const authLink = setContext((_, { headers}) => {
 })
 
 const httpLink = new HttpLink({ uri: "http://localhost:4000" })
-console.log("creating new apolloclient")
+//console.log("creating new apolloclient")
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: authLink.concat(httpLink)

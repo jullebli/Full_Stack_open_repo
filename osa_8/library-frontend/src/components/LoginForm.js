@@ -1,38 +1,33 @@
 import { useEffect, useState } from "react";
 import { useMutation, useApolloClient } from "@apollo/client";
-import { LOGIN, ME } from "./queries";
+import { LOGIN } from "./queries";
 
 const LoginForm = (props) => {
-  const client = useApolloClient()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [login, result] = useMutation(LOGIN)
+  const client = useApolloClient();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [login, result] = useMutation(LOGIN);
 
   useEffect(() => {
     if (result.data) {
-      const token = result.data.login.value
-      props.setToken(token)
-      localStorage.setItem("user-token", token)
-      //console.log("useEffect loginForm")
-      //console.log("localStorage.getItem(user-token)", localStorage.getItem("user-token"))
-      client.refetchQueries({ include: ME }).then((data) => {
-        //console.log("ME query refetched")
-        //console.log(data)
-    })
-  }
-  }, [result.data]) // eslint-disable-line
+      client.resetStore();
+      const token = result.data.login.value;
+      props.setToken(token);
+      localStorage.setItem("user-token", token);
+    }
+  }, [result.data]); // eslint-disable-line
 
   if (!props.show) {
-    return null
+    return null;
   }
 
   const submit = async (event) => {
-    event.preventDefault()
-    login({ variables: { username, password }})
+    event.preventDefault();
+    await login({ variables: { username, password } });
     //props.setPage("authors")
-    setUsername("")
-    setPassword("")
-  }
+    setUsername("");
+    setPassword("");
+  };
 
   return (
     <div>
@@ -55,7 +50,7 @@ const LoginForm = (props) => {
         <button type="submit">login</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;
